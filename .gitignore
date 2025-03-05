@@ -3,7 +3,7 @@ OdometerApp/*/.gradle
 OdometerApp/*/local.properties
 OdometerApp/*/.idea/caches
 OdometerApp/*/.idea/libraries
-OdometerApp/*/.idea/modules.xml
+OdometerApp/*/.idea/modules.xml 
 OdometerApp/*/.idea/workspace.xml
 OdometerApp/*/.idea/navEditor.xml
 OdometerApp/*/.idea/assetWizardSettings.xml
@@ -16,3 +16,5 @@ OdometerApp/*/local.properties
 OdometerApp/*/shelf/
 OdometerApp/*/workspace.xml
 OdometerApp/*/build
+MonitoringServer/node_modules
+MonitoringServer/.env
