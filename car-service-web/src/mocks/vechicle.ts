@@ -11,7 +11,10 @@ export const mockVehicle: Vehicle = {
     oil: 42,
     tires: 78,
     brakes: 65
-  }
+  },
+  make: "",
+  plate_number: "",
+  owner_phone: ""
 };
 
 // Для критического состояния

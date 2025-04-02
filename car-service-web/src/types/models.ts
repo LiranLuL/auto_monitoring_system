@@ -1,7 +1,10 @@
 export interface Vehicle {
     id: string;
     vin: string;
+    make: string;
     model: string;
+    plate_number: string;
+    owner_phone: string;
     mileage: number;
     lastServiceDate: string;
     healthStatus: {

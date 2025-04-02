@@ -1,22 +1,52 @@
 const express = require('express');
 const router = express.Router();
 const sensorController = require('../controllers/sensor');
+const auth = require('../middleware/auth');
+const workController = require('../controllers/work');
+const authController = require('../controllers/authController');
+const vehicleController = require('../controllers/vehicle');
 
-// Сохранение данных с автомобиля
-router.post('/sensor-data', sensorController.saveData);
+// Маршруты для техников
+router.post('/elm327-data', 
+  auth.verifyToken, 
+  auth.checkRole(['technician']), 
+  sensorController.saveData
+);
 
-// Получение состояния узлов
-router.get('/health-status/:vehicleId', async (req, res) => {
-  const { vehicleId } = req.params;
-  
-  // Логика расчета состояния
-  const engineHealth = calculateEngineHealth(vehicleId);
-  
-  res.json({
-    engine: engineHealth,
-    oil: 85,
-    tires: 92
-  });
-});
+router.get('/vehicle-health/:vehicleId', 
+  auth.verifyToken, 
+  sensorController.getVehicleHealth
+);
+
+router.get('/vehicles', 
+  auth.verifyToken, 
+  sensorController.getAllVehicles
+);
+
+// Маршруты только для администраторов
+router.post('/predict', 
+  auth.verifyToken, 
+  auth.checkRole(['admin']), 
+  sensorController.getPredictions
+);
+
+// Маршруты для работ
+router.post('/works', auth.verifyToken, workController.createWork);
+router.get('/works/vehicle/:vehicleId', auth.verifyToken, workController.getVehicleWorks);
+router.get('/works/technician', auth.verifyToken, workController.getTechnicianWorks);
+router.put('/works/:workId/status', auth.verifyToken, workController.updateWorkStatus);
+router.get('/works/:workId', auth.verifyToken, workController.getWorkDetails);
+
+// Маршруты аутентификации
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/user', auth.verifyToken, authController.getCurrentUser);
+
+// Маршруты для автомобилей
+router.get('/vehicles/search', auth.verifyToken, vehicleController.searchVehicle);
+router.post('/vehicles', auth.verifyToken, vehicleController.createVehicle);
+router.get('/vehicles', auth.verifyToken, vehicleController.getAllVehicles);
+router.put('/vehicles/:id', auth.verifyToken, vehicleController.updateVehicle);
+router.post('/vehicles/:vehicleId/health', auth.verifyToken, vehicleController.saveHealthData);
 
 module.exports = router;

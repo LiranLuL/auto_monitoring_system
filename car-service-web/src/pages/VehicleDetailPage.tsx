@@ -13,7 +13,6 @@ import {
 import API from '../api/client';
 import { Vehicle } from '../types/models';
 import { HealthStatusPanel } from '../components/HealthStatusPanel';
-import { mockVehicle } from '../mocks/vechicle';
 
 export const VehicleDetailPage = () => {
   const { vin } = useParams();
@@ -24,10 +23,11 @@ export const VehicleDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //const response = await API.get<Vehicle>(`/vehicles/${vin}`);
-        setVehicle(mockVehicle);
+        const response = await API.get<Vehicle>(`/vehicles/${vin}`);
+        setVehicle(response.data);
       } catch (err) {
         setError('Ошибка загрузки данных');
+        console.error('Error fetching vehicle data:', err);
       } finally {
         setLoading(false);
       }
@@ -40,10 +40,12 @@ export const VehicleDetailPage = () => {
   
   if (error) return <Alert severity="error">{error}</Alert>;
   
+  if (!vehicle) return <Alert severity="warning">Транспортное средство не найдено</Alert>;
+  
   return (
     <Box p={3}>
       <Typography variant="h4" gutterBottom>
-        {vehicle?.model} ({vehicle?.vin})
+        {vehicle.model} ({vehicle.vin})
       </Typography>
       
       <Grid container spacing={3}>
@@ -55,16 +57,16 @@ export const VehicleDetailPage = () => {
             </Typography>
             <Stack spacing={2}>
               <div>
-                <Typography>Пробег: {vehicle?.mileage} км</Typography>
+                <Typography>Пробег: {vehicle.mileage} км</Typography>
                 <LinearProgress 
                   variant="determinate" 
-                  value={(vehicle?.mileage || 0)/150000*100} 
+                  value={(vehicle.mileage || 0)/150000*100} 
                   sx={{ height: 8, mt: 1 }}
                 />
               </div>
               
               <div>
-                <Typography>Последнее ТО: {vehicle?.lastServiceDate}</Typography>
+                <Typography>Последнее ТО: {vehicle.lastServiceDate}</Typography>
               </div>
             </Stack>
           </Paper>
@@ -81,12 +83,12 @@ export const VehicleDetailPage = () => {
                 <Typography>Двигатель:</Typography>
                 <LinearProgress
                   variant="determinate" 
-                  value={vehicle?.healthStatus.engine} 
-                  color={getStatusColor(vehicle?.healthStatus.engine || 0)}
+                  value={vehicle.healthStatus.engine} 
+                  color={getStatusColor(vehicle.healthStatus.engine)} 
                   sx={{ height: 8 }}
                 />
                 <Typography variant="body2">
-                  {vehicle?.healthStatus.engine}%
+                  {vehicle.healthStatus.engine}%
                 </Typography>
               </Grid>
               
@@ -94,12 +96,12 @@ export const VehicleDetailPage = () => {
                 <Typography>Масло:</Typography>
                 <LinearProgress
                   variant="determinate"
-                  value={vehicle?.healthStatus.oil}
-                  color={getStatusColor(vehicle?.healthStatus.oil || 0)}
+                  value={vehicle.healthStatus.oil}
+                  color={getStatusColor(vehicle.healthStatus.oil)}
                   sx={{ height: 8 }}
                 />
                 <Typography variant="body2">
-                  {vehicle?.healthStatus.oil}%
+                  {vehicle.healthStatus.oil}%
                 </Typography>
               </Grid>
 
@@ -107,12 +109,12 @@ export const VehicleDetailPage = () => {
                 <Typography>Шины:</Typography>
                 <LinearProgress
                   variant="determinate"
-                  value={vehicle?.healthStatus.tires}
-                  color={getStatusColor(vehicle?.healthStatus.tires || 0)}
+                  value={vehicle.healthStatus.tires}
+                  color={getStatusColor(vehicle.healthStatus.tires)}
                   sx={{ height: 8 }}
                 />
                 <Typography variant="body2">
-                  {vehicle?.healthStatus.tires}%
+                  {vehicle.healthStatus.tires}%
                 </Typography>
               </Grid>
 
@@ -120,12 +122,12 @@ export const VehicleDetailPage = () => {
                 <Typography>Тормоза:</Typography>
                 <LinearProgress
                   variant="determinate"
-                  value={vehicle?.healthStatus.brakes}
-                  color={getStatusColor(vehicle?.healthStatus.brakes || 0)}
+                  value={vehicle.healthStatus.brakes}
+                  color={getStatusColor(vehicle.healthStatus.brakes)}
                   sx={{ height: 8 }}
                 />
                 <Typography variant="body2">
-                  {vehicle?.healthStatus.brakes}%
+                  {vehicle.healthStatus.brakes}%
                 </Typography>
               </Grid>
             </Grid>
@@ -138,7 +140,7 @@ export const VehicleDetailPage = () => {
             <Typography variant="h6" gutterBottom>
               Визуализация состояния
             </Typography>
-            <HealthStatusPanel data={vehicle?.healthStatus} />
+            <HealthStatusPanel data={vehicle.healthStatus} />
           </Paper>
         </Grid>
       </Grid>
