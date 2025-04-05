@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import Navigation from '../Navigation';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { login, error, isLoading } = useAuth();
+  const { login, error, isLoading, user, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
+  const [loginAttempted, setLoginAttempted] = useState(false);
+  
+  // Эффект для редиректа после успешной авторизации
+  useEffect(() => {
+    // Перенаправляем только если у нас есть пользователь и была попытка входа
+    if (isAuthenticated && user && loginAttempted && !isLoading) {
+      console.log('Login successful, redirecting to dashboard...', { user });
+      
+      // Добавляем небольшую задержку перед редиректом
+      const timer = setTimeout(() => {
+        navigate('/dashboard');
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated, user, navigate, loginAttempted, isLoading]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,16 +37,18 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      console.log('Submitting login form...');
+      setLoginAttempted(true);
       await login(formData);
-      navigate('/dashboard');
+      // НЕ перенаправляем здесь, это будет сделано в useEffect
     } catch (error) {
       console.error('Login failed:', error);
+      setLoginAttempted(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div>
@@ -88,6 +105,15 @@ const LoginForm: React.FC = () => {
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
               </button>
+            </div>
+            
+            <div className="text-center mt-4">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <Link to="/register-technician" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  Register here
+                </Link>
+              </p>
             </div>
           </form>
         </div>

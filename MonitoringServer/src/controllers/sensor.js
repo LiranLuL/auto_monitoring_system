@@ -2,14 +2,39 @@ const sensorModel = require('../models/sensor');
 const Vehicle = require('../models/vehicle');
 const axios = require('axios');
 
+// Добавляем новые методы для работы с токенами
+exports.generateSensorToken = async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+    const token = await Vehicle.generateSensorToken(vehicleId);
+    res.json({ token: token.token });
+  } catch (err) {
+    console.error('Error generating sensor token:', err);
+    res.status(500).json({ error: 'Failed to generate sensor token' });
+  }
+};
+
 exports.saveData = async (req, res) => {
   try {
-    // Проверяем роль пользователя
-    if (req.user.role !== 'technician') {
-      return res.status(403).json({ error: 'Only technicians can save sensor data' });
+    const token = req.headers['x-sensor-token'];
+    if (!token) {
+      return res.status(401).json({ error: 'Sensor token is required' });
     }
 
-    const data = req.body;
+    // Получаем автомобиль по токену
+    const vehicle = await Vehicle.getVehicleBySensorToken(token);
+    if (!vehicle) {
+      return res.status(401).json({ error: 'Invalid sensor token' });
+    }
+
+    // Обновляем время последнего использования токена
+    await Vehicle.updateSensorTokenUsage(token);
+
+    const data = {
+      ...req.body,
+      vehicleId: vehicle.id
+    };
+    
     console.log('Received sensor data:', data);
     
     // Сохраняем данные сенсора
@@ -17,10 +42,11 @@ exports.saveData = async (req, res) => {
     
     // Обновляем состояние автомобиля
     const healthData = await Vehicle.saveHealthData({
-      vehicleId: data.vehicleId,
+      vehicleId: vehicle.id,
       engineHealth: calculateEngineHealth(data),
       oilHealth: calculateOilHealth(data),
-      tiresHealth: calculateTiresHealth(data)
+      tiresHealth: calculateTiresHealth(data),
+      brakesHealth: calculateBrakesHealth(data)
     });
 
     res.status(201).json({
@@ -78,6 +104,22 @@ exports.getPredictions = async (req, res) => {
   }
 };
 
+exports.getTokenByVin = async (req, res) => {
+  try {
+    const { vin } = req.params;
+    const token = await Vehicle.getSensorTokenByVin(vin);
+    
+    if (!token) {
+      return res.status(404).json({ error: 'No sensor token found for this vehicle' });
+    }
+
+    res.json({ token });
+  } catch (err) {
+    console.error('Error getting sensor token by VIN:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 // Вспомогательные функции для расчета состояния
 function calculateEngineHealth(data) {
   // Здесь должна быть логика расчета состояния двигателя
@@ -94,3 +136,8 @@ function calculateTiresHealth(data) {
   // Здесь должна быть логика расчета состояния шин
   return Math.min(100, Math.max(0, 90 + Math.random() * 5));
 }
+
+function calculateBrakesHealth(data) {
+  // Здесь должна быть логика расчета состояния тормозов
+  return Math.min(100, Math.max(0, 80 + Math.random() * 10));
+}  

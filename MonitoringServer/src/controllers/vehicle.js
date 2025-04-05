@@ -41,8 +41,18 @@ class VehicleController {
   static async saveHealthData(req, res) {
     try {
       const { vehicleId } = req.params;
-      const healthData = req.body;
-      const vehicle = await Vehicle.saveHealthData(vehicleId, healthData);
+      const { engineHealth, oilHealth, tiresHealth, brakesHealth } = req.body;
+      
+      // Преобразуем значения в числа с плавающей точкой
+      const healthData = {
+        vehicleId,
+        engineHealth: parseFloat(engineHealth),
+        oilHealth: parseFloat(oilHealth),
+        tiresHealth: parseFloat(tiresHealth),
+        brakesHealth: parseFloat(brakesHealth)
+      };
+
+      const vehicle = await Vehicle.saveHealthData(healthData);
       res.json(vehicle);
     } catch (error) {
       console.error('Error saving health data:', error);

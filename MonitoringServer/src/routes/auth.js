@@ -3,8 +3,11 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const auth = require('../middleware/auth');
 
-// Регистрация нового пользователя
+// Регистрация нового пользователя (мобильное приложение)
 router.post('/register', authController.register);
+
+// Регистрация механика (веб-интерфейс)
+router.post('/register-technician', authController.registerTechnician);
 
 // Вход в систему
 router.post('/login', authController.login);

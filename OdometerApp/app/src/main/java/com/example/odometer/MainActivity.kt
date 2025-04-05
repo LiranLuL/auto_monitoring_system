@@ -1,4 +1,5 @@
 package com.example.odometer
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,8 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.lazy.LazyColumn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.BufferedOutputStream
 import java.io.InputStream
@@ -21,129 +25,657 @@ import java.net.Socket
 import java.net.URL
 import org.json.JSONObject
 import org.json.JSONArray
+import android.content.Context
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class MainActivity : ComponentActivity() {
+    private var dataCollectionJob: Job? = null
+    
+    // Объявляем StateFlow переменные внутри класса MainActivity
+    private val _rpmValue = MutableStateFlow(0)
+    val rpmValue: StateFlow<Int> = _rpmValue.asStateFlow()
+    
+    private val _speedValue = MutableStateFlow(0)
+    val speedValue: StateFlow<Int> = _speedValue.asStateFlow()
+    
+    private val _engineTempValue = MutableStateFlow(0)
+    val engineTempValue: StateFlow<Int> = _engineTempValue.asStateFlow()
+    
+    private val _dtcCodesValue = MutableStateFlow("")
+    val dtcCodesValue: StateFlow<String> = _dtcCodesValue.asStateFlow()
+    
+    private val _o2VoltageValue = MutableStateFlow(0.0)
+    val o2VoltageValue: StateFlow<Double> = _o2VoltageValue.asStateFlow()
+    
+    private val _fuelPressureValue = MutableStateFlow(0.0)
+    val fuelPressureValue: StateFlow<Double> = _fuelPressureValue.asStateFlow()
+    
+    private val _intakeTempValue = MutableStateFlow(0)
+    val intakeTempValue: StateFlow<Int> = _intakeTempValue.asStateFlow()
+    
+    private val _mafSensorValue = MutableStateFlow(0.0)
+    val mafSensorValue: StateFlow<Double> = _mafSensorValue.asStateFlow()
+    
+    private val _throttlePosValue = MutableStateFlow(0)
+    val throttlePosValue: StateFlow<Int> = _throttlePosValue.asStateFlow()
+    
+    private val _engineHealthValue = MutableStateFlow(100)
+    val engineHealthValue: StateFlow<Int> = _engineHealthValue.asStateFlow()
+    
+    private val _oilHealthValue = MutableStateFlow(100)
+    val oilHealthValue: StateFlow<Int> = _oilHealthValue.asStateFlow()
+    
+    private val _tiresHealthValue = MutableStateFlow(100)
+    val tiresHealthValue: StateFlow<Int> = _tiresHealthValue.asStateFlow()
+    
+    private val _brakesHealthValue = MutableStateFlow(100)
+    val brakesHealthValue: StateFlow<Int> = _brakesHealthValue.asStateFlow()
+    
+    private val _collectingStatus = MutableStateFlow("Статус: Не подключено")
+    val collectingStatus: StateFlow<String> = _collectingStatus.asStateFlow()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Проверяем наличие токена
+        val token = getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("jwt_token", null)
+        if (token == null) {
+            // Если токена нет, перенаправляем на экран логина
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
         setContent {
-            OdometerApp()
+            OdometerApp(this@MainActivity)
+        }
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        stopDataCollection()
+    }
+    
+    fun startDataCollection() {
+        dataCollectionJob?.cancel()
+        _collectingStatus.value = "Статус: Запуск сбора данных..."
+        
+        dataCollectionJob = CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val socket = connectToElm327("192.168.0.121", 35000)
+                if (socket != null) {
+                    try {
+                        _collectingStatus.value = "Статус: Подключено. Сбор данных..."
+                        while (isActive) {
+                            collectAndSendData(socket)
+                            delay(10000) // 10 секунд между отправками
+                        }
+                    } finally {
+                        try {
+                            socket.close()
+                            _collectingStatus.value = "Статус: Соединение закрыто"
+                        } catch (e: Exception) {
+                            Log.e("Socket", "Error closing socket: ${e.localizedMessage}")
+                            _collectingStatus.value = "Статус: Ошибка при закрытии соединения"
+                        }
+                    }
+                } else {
+                    _collectingStatus.value = "Статус: Не удалось подключиться"
+                }
+            } catch (e: Exception) {
+                Log.e("DataCollection", "Error in data collection: ${e.localizedMessage}")
+                _collectingStatus.value = "Статус: Ошибка - ${e.localizedMessage}"
+            }
+        }
+    }
+    
+    fun stopDataCollection() {
+        dataCollectionJob?.cancel()
+        dataCollectionJob = null
+        _collectingStatus.value = "Статус: Остановлено"
+    }
+    
+    private suspend fun collectAndSendData(socket: Socket) {
+        try {
+            // Обновляем статус на главном потоке
+            withContext(Dispatchers.Main) {
+                _collectingStatus.value = "Статус: Получение данных..."
+            }
+            
+            // Получаем данные с задержкой между запросами
+            val rpmResponse = sendCommand(socket, "010C")
+            delay(100)
+            
+            val speedResponse = sendCommand(socket, "010D")
+            delay(100)
+            
+            val tempResponse = sendCommand(socket, "0105")
+            delay(100)
+            
+            val dtcResponse = sendCommand(socket, "03")
+            delay(100)
+            
+            val o2Response = sendCommand(socket, "0114")
+            delay(100)
+            
+            val fuelResponse = sendCommand(socket, "010A")
+            delay(100)
+            
+            val intakeResponse = sendCommand(socket, "010F")
+            delay(100)
+            
+            val mafResponse = sendCommand(socket, "0110")
+            delay(100)
+            
+            val throttleResponse = sendCommand(socket, "0111")
+            
+            // Парсим значения
+            val rpm = parseRPM(rpmResponse)
+            val speed = parseSpeed(speedResponse)
+            val temp = parseTemperature(tempResponse)
+            val dtc = parseDTC(dtcResponse)
+            val o2 = parseO2Voltage(o2Response)
+            val fuel = parseFuelPressure(fuelResponse)
+            val intake = parseTemperature(intakeResponse)
+            val maf = parseMAF(mafResponse)
+            val throttle = parseThrottle(throttleResponse)
+
+            // Вычисляем здоровье компонентов на основе полученных данных
+            val engineHealth = calculateEngineHealth(rpm, temp, dtc)
+            val oilHealth = calculateOilHealth(rpm, temp)
+            val tiresHealth = calculateTiresHealth(speed)
+            val brakesHealth = calculateBrakesHealth(speed)
+
+            // Отправляем данные на сервер
+            val telemetryData = JSONObject()
+            telemetryData.put("rpm", rpm ?: 0)
+            telemetryData.put("speed", speed ?: 0)
+            telemetryData.put("engineTemp", temp ?: 0)
+            telemetryData.put("dtcCodes", dtc)
+            telemetryData.put("o2Voltage", o2 ?: 0.0)
+            telemetryData.put("fuelPressure", fuel ?: 0.0)
+            telemetryData.put("intakeTemp", intake ?: 0)
+            telemetryData.put("mafSensor", maf ?: 0.0)
+            telemetryData.put("throttlePos", throttle ?: 0)
+            
+            telemetryData.put("engineHealth", engineHealth)
+            telemetryData.put("oilHealth", oilHealth)
+            telemetryData.put("tiresHealth", tiresHealth)
+            telemetryData.put("brakesHealth", brakesHealth)
+
+            Log.d("API", "Sending data: ${telemetryData.toString()}")
+            sendToBackend(this, telemetryData)
+            
+            // Обновляем UI значения на главном потоке
+            withContext(Dispatchers.Main) {
+                updateUIValues(
+                    rpm ?: 0,
+                    speed ?: 0,
+                    temp ?: 0,
+                    dtc,
+                    o2 ?: 0.0,
+                    fuel ?: 0.0,
+                    intake ?: 0,
+                    maf ?: 0.0,
+                    throttle ?: 0,
+                    engineHealth,
+                    oilHealth,
+                    tiresHealth,
+                    brakesHealth
+                )
+                
+                // Явно указываем, что сбор данных завершен
+                _collectingStatus.value = "Статус: Данные получены (${System.currentTimeMillis()})"
+            }
+        } catch (e: Exception) {
+            Log.e("Error", "Error in collectAndSendData: ${e.localizedMessage}")
+            withContext(Dispatchers.Main) {
+                _collectingStatus.value = "Статус: Ошибка - ${e.localizedMessage}"
+            }
+        }
+    }
+    
+    private fun calculateEngineHealth(rpm: Int?, temp: Int?, dtcCodes: String): Int {
+        var health = 100
+        
+        // Штраф за высокие обороты
+        if (rpm != null && rpm > 5000) {
+            health -= 10
+        }
+        
+        // Штраф за высокую температуру
+        if (temp != null && temp > 105) {
+            health -= 15
+        }
+        
+        // Штраф за наличие ошибок
+        if (dtcCodes != "[]") {
+            health -= 25
+        }
+        
+        return health.coerceIn(0, 100)
+    }
+    
+    private fun calculateOilHealth(rpm: Int?, temp: Int?): Int {
+        var health = 100
+        
+        // Снижение здоровья масла на основе температуры двигателя
+        if (temp != null) {
+            when {
+                temp > 110 -> health -= 20
+                temp > 100 -> health -= 10
+                temp > 90 -> health -= 5
+            }
+        }
+        
+        // Снижение здоровья масла на основе высоких оборотов
+        if (rpm != null && rpm > 4500) {
+            health -= 10
+        }
+        
+        return health.coerceIn(0, 100)
+    }
+    
+    private fun calculateTiresHealth(speed: Int?): Int {
+        var health = 100
+        
+        // Снижение здоровья шин на основе скорости
+        if (speed != null) {
+            when {
+                speed > 120 -> health -= 15
+                speed > 100 -> health -= 10
+                speed > 80 -> health -= 5
+            }
+        }
+        
+        return health.coerceIn(0, 100)
+    }
+    
+    private fun calculateBrakesHealth(speed: Int?): Int {
+        var health = 100
+        
+        // Снижение здоровья тормозов на основе скорости
+        if (speed != null) {
+            when {
+                speed > 120 -> health -= 20
+                speed > 100 -> health -= 15
+                speed > 80 -> health -= 10
+            }
+        }
+        
+        return health.coerceIn(0, 100)
+    }
+    
+    // Метод для обновления всех значений UI
+    private fun updateUIValues(
+        rpm: Int,
+        speed: Int,
+        engineTemp: Int,
+        dtcCodes: String,
+        o2Voltage: Double,
+        fuelPressure: Double,
+        intakeTemp: Int,
+        mafSensor: Double,
+        throttlePos: Int,
+        engineHealth: Int,
+        oilHealth: Int,
+        tiresHealth: Int,
+        brakesHealth: Int
+    ) {
+        // Обновляем значения StateFlow
+        _rpmValue.value = rpm
+        _speedValue.value = speed
+        _engineTempValue.value = engineTemp
+        _dtcCodesValue.value = dtcCodes
+        _o2VoltageValue.value = o2Voltage
+        _fuelPressureValue.value = fuelPressure
+        _intakeTempValue.value = intakeTemp
+        _mafSensorValue.value = mafSensor
+        _throttlePosValue.value = throttlePos
+        _engineHealthValue.value = engineHealth
+        _oilHealthValue.value = oilHealth
+        _tiresHealthValue.value = tiresHealth
+        _brakesHealthValue.value = brakesHealth
+        
+        // Логируем обновление для отладки
+        Log.d("UI_UPDATE", "UI values updated: rpm=$rpm, speed=$speed")
+    }
+    
+    // ... остальные методы класса ...
+}
+
+// Удаляем глобальные переменные состояния
+// private var uiRpmValue = mutableStateOf(0)
+// private var uiSpeedValue = mutableStateOf(0)
+// ... и т.д.
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OdometerApp(mainActivity: MainActivity) {
+    // Используем collectAsState для подписки на StateFlow
+    val connectionStatus by mainActivity.collectingStatus.collectAsState()
+    val rpmValue by mainActivity.rpmValue.collectAsState()
+    val speedValue by mainActivity.speedValue.collectAsState()
+    val engineTempValue by mainActivity.engineTempValue.collectAsState()
+    val dtcCodesValue by mainActivity.dtcCodesValue.collectAsState()
+    val o2VoltageValue by mainActivity.o2VoltageValue.collectAsState()
+    val fuelPressureValue by mainActivity.fuelPressureValue.collectAsState()
+    val intakeTempValue by mainActivity.intakeTempValue.collectAsState()
+    val mafSensorValue by mainActivity.mafSensorValue.collectAsState()
+    val throttlePosValue by mainActivity.throttlePosValue.collectAsState()
+    val engineHealthValue by mainActivity.engineHealthValue.collectAsState()
+    val oilHealthValue by mainActivity.oilHealthValue.collectAsState()
+    val tiresHealthValue by mainActivity.tiresHealthValue.collectAsState()
+    val brakesHealthValue by mainActivity.brakesHealthValue.collectAsState()
+    
+    var isCollecting by remember { mutableStateOf(false) }
+    
+    // Эффект для отслеживания статуса сбора данных
+    LaunchedEffect(connectionStatus) {
+        isCollecting = connectionStatus.contains("Сбор данных") || 
+                       connectionStatus.contains("Получение данных")
+    }
+
+    MaterialTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Мониторинг автомобиля",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Button(
+                    onClick = {
+                        if (isCollecting) {
+                            mainActivity.stopDataCollection()
+                            isCollecting = false
+                        } else {
+                            mainActivity.startDataCollection()
+                            isCollecting = true
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isCollecting) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(if (isCollecting) "Остановить сбор данных" else "Начать сбор данных")
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = connectionStatus,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                // Прокручиваемый контент с карточками
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Карточка скорости и оборотов
+                    item {
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Основные показатели",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column {
+                                        Text(
+                                            text = "Скорость",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = "$speedValue км/ч",
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                    
+                                    Column {
+                                        Text(
+                                            text = "Обороты",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = "$rpmValue об/мин",
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Карточка с показателями здоровья компонентов
+                    item {
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Здоровье компонентов",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                
+                                HealthIndicator("Двигатель", engineHealthValue)
+                                HealthIndicator("Масло", oilHealthValue)
+                                HealthIndicator("Шины", tiresHealthValue)
+                                HealthIndicator("Тормоза", brakesHealthValue)
+                            }
+                        }
+                    }
+                    
+                    // Карточка с температурой
+                    item {
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Температура",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column {
+                                        Text(
+                                            text = "Двигатель",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = "$engineTempValue°C",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = when {
+                                                engineTempValue > 105 -> MaterialTheme.colorScheme.error
+                                                engineTempValue > 95 -> MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                                                else -> MaterialTheme.colorScheme.primary
+                                            }
+                                        )
+                                    }
+                                    
+                                    Column {
+                                        Text(
+                                            text = "Впускной коллектор",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = "$intakeTempValue°C",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Дополнительные датчики
+                    item {
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Дополнительные датчики",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                
+                                SensorValueRow("O₂ датчик", "$o2VoltageValue В")
+                                SensorValueRow("Давление топлива", "$fuelPressureValue кПа")
+                                SensorValueRow("MAF сенсор", "$mafSensorValue г/с")
+                                SensorValueRow("Положение дросселя", "$throttlePosValue%")
+                            }
+                        }
+                    }
+                    
+                    // Коды ошибок
+                    item {
+                        if (dtcCodesValue != "[]") {
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                                colors = CardDefaults.elevatedCardColors(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(16.dp)
+                                ) {
+                                    Text(
+                                        text = "Коды ошибок",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                    
+                                    Text(
+                                        text = dtcCodesValue.replace("[", "").replace("]", "").replace("\"", ""),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onErrorContainer
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OdometerApp() {
-    var connectionStatus by remember { mutableStateOf("Статус: Не подключено") }
-    var distanceValue by remember { mutableStateOf(0) }
-    var rpmValue by remember { mutableStateOf(0) }
-    var speedValue by remember { mutableStateOf(0) }
-    var engineTempValue by remember { mutableStateOf(0) }
-    var dtcCodesValue by remember { mutableStateOf("") }
-    var o2VoltageValue by remember { mutableStateOf(0.0) }
-    var fuelPressureValue by remember { mutableStateOf(0.0) }
-    var intakeTempValue by remember { mutableStateOf(0) }
-    var mafSensorValue by remember { mutableStateOf(0.0) }
-    var throttlePosValue by remember { mutableStateOf(0) }
-    
-    val coroutineScope = remember { CoroutineScope(Dispatchers.IO) }
-
+fun HealthIndicator(label: String, value: Int) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
     ) {
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    try {
-                        val socket = connectToElm327("192.168.0.121", 35000)
-                        if (socket != null) {
-                            socket.use { s ->
-                            readDistanceData(
-                                    socket = s,
-                                updateStatus = { connectionStatus = it },
-                                    updateDistance = { distanceValue = it },
-                                    updateRPM = { rpmValue = it },
-                                    updateSpeed = { speedValue = it },
-                                    updateEngineTemp = { engineTempValue = it },
-                                    updateDTC = { dtcCodesValue = it },
-                                    updateO2Voltage = { o2VoltageValue = it },
-                                    updateFuelPressure = { fuelPressureValue = it },
-                                    updateIntakeTemp = { intakeTempValue = it },
-                                    updateMAF = { mafSensorValue = it },
-                                    updateThrottle = { throttlePosValue = it }
-                                )
-                            }
-                        } else {
-                            connectionStatus = "Ошибка: Не удалось подключиться"
-                        }
-                    } catch (e: Exception) {
-                        connectionStatus = "Ошибка: ${e.localizedMessage}"
-                    }
-                }
-            },
-            modifier = Modifier.padding(8.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Получить данные")
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "$value%",
+                style = MaterialTheme.typography.bodyMedium,
+                color = when {
+                    value < 50 -> MaterialTheme.colorScheme.error
+                    value < 70 -> MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                    value < 90 -> MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                    else -> MaterialTheme.colorScheme.primary
+                }
+            )
         }
+        
+        LinearProgressIndicator(
+            progress = value / 100f,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp),
+            color = when {
+                value < 50 -> MaterialTheme.colorScheme.error
+                value < 70 -> MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                value < 90 -> MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                else -> MaterialTheme.colorScheme.primary
+            },
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    }
+}
 
-        Spacer(modifier = Modifier.height(24.dp))
-
+@Composable
+fun SensorValueRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Text(
-            text = connectionStatus,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(8.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Отображение всех параметров
-        Text(
-            text = "RPM: $rpmValue",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
+            text = label,
+            style = MaterialTheme.typography.bodyMedium
         )
         Text(
-            text = "Скорость: $speedValue км/ч",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "Температура двигателя: $engineTempValue°C",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "Коды ошибок: ${dtcCodesValue.replace("[", "").replace("]", "").replace("\"", "")}",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "Напряжение O2: $o2VoltageValue В",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "Давление топлива: $fuelPressureValue кПа",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "Температура впуска: $intakeTempValue°C",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "MAF: $mafSensorValue г/с",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = "Положение дросселя: $throttlePosValue%",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(4.dp)
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -249,6 +781,7 @@ private suspend fun readResponse(inputStream: InputStream): String {
 
 private suspend fun readDistanceData(
     socket: Socket,
+    context: Context,
     updateStatus: (String) -> Unit,
     updateDistance: (Int) -> Unit,
     updateRPM: (Int) -> Unit,
@@ -337,21 +870,19 @@ private suspend fun readDistanceData(
         throttle?.let { updateThrottle(it) }
 
         // Отправляем данные на сервер
-        val data = JSONObject().apply {
-            put("vehicleId", "TEST123")
-            put("rpm", rpm ?: 0)
-            put("speed", speed ?: 0)
-            put("engineTemp", temp ?: 0)
-            put("dtcCodes", dtc)
-            put("o2Voltage", o2 ?: 0.0)
-            put("fuelPressure", fuel ?: 0.0)
-            put("intakeTemp", intake ?: 0)
-            put("mafSensor", maf ?: 0.0)
-            put("throttlePos", throttle ?: 0)
-        }
+        val telemetryData = JSONObject()
+        telemetryData.put("rpm", rpm ?: 0)
+        telemetryData.put("speed", speed ?: 0)
+        telemetryData.put("engineTemp", temp ?: 0)
+        telemetryData.put("dtcCodes", dtc)
+        telemetryData.put("o2Voltage", o2 ?: 0.0)
+        telemetryData.put("fuelPressure", fuel ?: 0.0)
+        telemetryData.put("intakeTemp", intake ?: 0)
+        telemetryData.put("mafSensor", maf ?: 0.0)
+        telemetryData.put("throttlePos", throttle ?: 0)
 
-        Log.d("API", "Sending data: ${data.toString()}")
-        sendToBackend(data)
+        Log.d("API", "Sending data: ${telemetryData.toString()}")
+        sendToBackend(context, telemetryData)
         updateStatus("Статус: Данные отправлены")
     } catch (e: Exception) {
         Log.e("Error", "Error in readDistanceData: ${e.localizedMessage}")
@@ -376,7 +907,7 @@ private fun parseRPM(response: String): Int? {
         val startIndex = cleanResponse.indexOf("410C") + 4
         val high = cleanResponse.substring(startIndex, startIndex + 2).toInt(16)
         val low = cleanResponse.substring(startIndex + 2, startIndex + 4).toInt(16)
-        val rpm = (high * 256 + low) / 4
+        val rpm = ((high * 256 + low) / 4)
         Log.d("RPM", "Calculated RPM: $rpm")
         return rpm
     } catch (e: Exception) {
@@ -576,14 +1107,18 @@ private fun parseThrottle(response: String): Int? {
     }
 }
 
-private suspend fun sendToBackend(data: JSONObject) {
+private suspend fun sendToBackend(context: Context, data: JSONObject) {
     try {
-        val url = URL("http://192.168.0.121:5000/api/elm327-data")
+        val token = context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("jwt_token", null)
+            ?: throw Exception("JWT token not found")
+            
+        val url = URL("http://192.168.0.121:5000/telemetry")
         val connection = url.openConnection() as HttpURLConnection
         
         connection.apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")
+            setRequestProperty("Authorization", "Bearer $token")
             doOutput = true
             connectTimeout = 5000
             readTimeout = 5000
@@ -593,17 +1128,13 @@ private suspend fun sendToBackend(data: JSONObject) {
             outputStream.flush()
         }
 
-        Log.d("API", "Response code: ${connection.responseCode}")
-        when (connection.responseCode) {
-            HttpURLConnection.HTTP_CREATED -> {
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
-                Log.d("API", "Data sent successfully: $response")
-            }
-            else -> {
-                val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                Log.e("API", "Error: ${connection.responseCode}, Response: $errorStream")
-            }
+        val responseCode = connection.responseCode
+        if (responseCode != 200) {
+            throw Exception("Error sending telemetry data. Response code: $responseCode")
         }
+
+        val response = connection.inputStream.bufferedReader().use { it.readText() }
+        Log.d("API", "Data sent successfully: $response")
     } catch (e: Exception) {
         Log.e("API", "Connection error: ${e.localizedMessage}")
         throw e

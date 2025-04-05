@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import PrivateRoute from './components/auth/PrivateRoute';
-import LoginForm from './components/auth/LoginForm';
+import { LoginPage } from './pages/LoginPage';
 import RegisterForm from './components/auth/RegisterForm';
 import Dashboard from './pages/Dashboard';
 import WorkManagement from './pages/WorkManagement';
 import VehicleManagement from './pages/VehicleManagement';
 import { VehicleDetailPage } from './pages/VehicleDetailPage';
+import { RegisterTechnician } from './pages/RegisterTechnician';
 import Navigation from './components/Navigation';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -21,15 +21,15 @@ const App: React.FC = () => {
           <Toaster position="top-right" />
           <Navigation />
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterForm />} />
+            <Route path="/register-technician" element={<RegisterTechnician />} />
             <Route
               path="/dashboard"
               element={
-                <PrivateRoute>
-                  <Navigation />
+                <ProtectedRoute>
                   <Dashboard />
-                </PrivateRoute>
+                </ProtectedRoute>
               }
             />
             <Route
@@ -72,7 +72,7 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
       </Router>

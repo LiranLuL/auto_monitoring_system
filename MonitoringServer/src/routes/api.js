@@ -8,8 +8,6 @@ const vehicleController = require('../controllers/vehicle');
 
 // Маршруты для техников
 router.post('/elm327-data', 
-  auth.verifyToken, 
-  auth.checkRole(['technician']), 
   sensorController.saveData
 );
 
@@ -48,5 +46,11 @@ router.post('/vehicles', auth.verifyToken, vehicleController.createVehicle);
 router.get('/vehicles', auth.verifyToken, vehicleController.getAllVehicles);
 router.put('/vehicles/:id', auth.verifyToken, vehicleController.updateVehicle);
 router.post('/vehicles/:vehicleId/health', auth.verifyToken, vehicleController.saveHealthData);
+
+// Маршруты для датчиков
+router.post('/elm327-data', auth.verifyToken, sensorController.saveData);
+router.get('/vehicle-health/:vehicleId', auth.verifyToken, sensorController.getVehicleHealth);
+router.post('/vehicles/:vehicleId/sensor-token', auth.verifyToken, sensorController.generateSensorToken);
+router.get('/vehicles/vin/:vin/sensor-token', sensorController.getTokenByVin);
 
 module.exports = router;
