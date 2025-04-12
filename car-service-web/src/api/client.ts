@@ -1,57 +1,37 @@
 import axios from 'axios';
 
-// Используем более конкретный URL
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-console.log('API Client baseURL:', baseURL);
-
 const API = axios.create({
-  baseURL,
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
   timeout: 10000,
 });
 
 // Добавляем перехватчик для добавления токена в заголовки
 API.interceptors.request.use(
   (config) => {
-    console.log('API request to:', config.url);
     const token = localStorage.getItem('token');
     if (token) {
-      console.log('Token found, adding to headers');
       config.headers.Authorization = `Bearer ${token}`;
-    } else {
-      console.log('No token found');
     }
     return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
 // Добавляем перехватчик для обработки ошибок авторизации
 API.interceptors.response.use(
-  (response) => {
-    console.log('API response from:', response.config.url, 'status:', response.status);
-    console.log('Response data:', response.data);
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error('Response error:', error);
-    if (error.response) {
-      console.error('Error response status:', error.response.status);
-      console.error('Error response data:', error.response.data);
-      
-      if (error.response.status === 401) {
-        // Проверяем, не является ли это запросом проверки токена или получения данных пользователя
-        if (!error.config.url?.includes('/verify-token') && 
-            !error.config.url?.includes('/me') && 
-            !error.config.url?.includes('/login')) {
-          // Если это не запрос проверки токена, получения данных пользователя или логина,
-          // удаляем токен и перенаправляем
-          console.log('Unauthorized error, removing token and redirecting');
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-        }
+    if (error.response?.status === 401) {
+      // Проверяем, не является ли это запросом проверки токена или получения данных пользователя
+      if (!error.config.url?.includes('/verify-token') && 
+          !error.config.url?.includes('/me') && 
+          !error.config.url?.includes('/login')) {
+        // Если это не запрос проверки токена, получения данных пользователя или логина,
+        // удаляем токен и перенаправляем
+        localStorage.removeItem('token');
+        window.location.href = '/login';
       }
     }
     return Promise.reject(error);

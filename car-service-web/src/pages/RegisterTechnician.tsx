@@ -7,7 +7,8 @@ export const RegisterTechnician = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    vin: ''
   });
   const navigate = useNavigate();
   const { registerTechnician, error, isLoading, user, isAuthenticated } = useAuth();

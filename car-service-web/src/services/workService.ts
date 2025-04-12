@@ -9,8 +9,17 @@ const workService = {
   },
 
   async getVehicleWorks(vehicleId: string): Promise<Work[]> {
-    const response = await API.get(API_ENDPOINTS.works.getVehicleWorks(vehicleId));
-    return response.data;
+    if (!vehicleId) {
+      console.error('Vehicle ID is required');
+      return [];
+    }
+    try {
+      const response = await API.get(API_ENDPOINTS.works.getVehicleWorks(vehicleId));
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching vehicle works:', error);
+      return [];
+    }
   },
 
   async getTechnicianWorks(): Promise<Work[]> {

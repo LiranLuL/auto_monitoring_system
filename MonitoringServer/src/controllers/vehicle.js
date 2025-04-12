@@ -3,17 +3,31 @@ const Vehicle = require('../models/vehicle');
 class VehicleController {
   static async searchVehicle(req, res) {
     try {
-      const { query } = req.query;
-      // Разделяем поисковый запрос на VIN и телефон владельца
-      const searchParams = {
-        vin: query,
-        ownerPhone: query
-      };
+      // Получаем параметры из тела запроса вместо query
+      const { vin, ownerPhone } = req.body;
+      
+      console.log('Searching vehicles with params:', { vin, ownerPhone });
+      
+      // Создаем объект с параметрами поиска
+      const searchParams = {};
+      
+      if (vin) {
+        searchParams.vin = vin;
+      }
+      
+      if (ownerPhone) {
+        searchParams.ownerPhone = ownerPhone;
+      }
+      
+      // Выполняем поиск
       const vehicles = await Vehicle.search(searchParams);
+      
+      console.log(`Found ${vehicles.length} vehicles`);
+      
       res.json(vehicles);
     } catch (error) {
       console.error('Error searching vehicles:', error);
-      res.status(500).json({ error: 'Failed to search vehicles' });
+      res.status(500).json({ error: 'Failed to search vehicles', details: error.message });
     }
   }
 

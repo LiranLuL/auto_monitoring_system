@@ -1,16 +1,7 @@
-const { Pool } = require('pg');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
+const db = require('../db');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-
-// Создаем пул соединений с PostgreSQL
-const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'car_monitoring',
-  password: process.env.DB_PASSWORD || 'postgres',
-  port: process.env.DB_PORT || 5432
-});
 
 class User {
   static async createTables() {
@@ -38,8 +29,8 @@ class User {
     `;
     
     try {
-      await pool.query(userTableQuery);
-      await pool.query(vehicleTableQuery);
+      await db.query(userTableQuery);
+      await db.query(vehicleTableQuery);
       console.log('Tables created or already exist');
     } catch (error) {
       console.error('Error creating tables:', error);
@@ -47,38 +38,34 @@ class User {
     }
   }
 
-  static async create({ email, password, username, vin, role = 'user' }) {
-    const client = await pool.connect();
-    
+  static async create({ email, username, password, vin, role = 'user' }) {
+    const client = await db.getClient();
     try {
       await client.query('BEGIN');
       
       // Хешируем пароль
       const hashedPassword = await bcrypt.hash(password, 10);
       
-      // Создаем пользователя
-      const userQuery = `
-        INSERT INTO users (email, password, username, role)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, email, username, role, created_at;
-      `;
-      const userValues = [email, hashedPassword, username, role];
-      const userResult = await client.query(userQuery, userValues);
+      // Вставляем пользователя
+      const userResult = await client.query(
+        'INSERT INTO users (email, username, password, role) VALUES ($1, $2, $3, $4) RETURNING id, email, username, role',
+        [email, username, hashedPassword, role]
+      );
+      
       const user = userResult.rows[0];
       
-      // Если указан VIN, добавляем автомобиль
+      // Если передан VIN, добавляем его в таблицу user_vehicles
       if (vin) {
-        const vehicleQuery = `
-          INSERT INTO user_vehicles (user_id, vin)
-          VALUES ($1, $2)
-          RETURNING vin;
-        `;
-        const vehicleValues = [user.id, vin.toUpperCase()];
-        await client.query(vehicleQuery, vehicleValues);
+        await client.query(
+          'INSERT INTO user_vehicles (user_id, vin) VALUES ($1, $2)',
+          [user.id, vin]
+        );
       }
       
       await client.query('COMMIT');
-      return user;
+      
+      // Получаем пользователя с его vehicles
+      return await this.findById(user.id);
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;
@@ -88,43 +75,49 @@ class User {
   }
 
   static async findByEmail(email) {
-    const query = `
-      SELECT users.*, array_agg(user_vehicles.vin) as vehicles
-      FROM users 
-      LEFT JOIN user_vehicles ON users.id = user_vehicles.user_id
-      WHERE users.email = $1
-      GROUP BY users.id;
-    `;
-    const result = await pool.query(query, [email]);
-    return result.rows[0] || null;
+    const result = await db.query(
+      'SELECT id, email, username, password, role FROM users WHERE email = $1',
+      [email]
+    );
+    return result.rows[0];
   }
 
   static async findByUsername(username) {
-    const query = `
-      SELECT users.*, array_agg(user_vehicles.vin) as vehicles
-      FROM users 
-      LEFT JOIN user_vehicles ON users.id = user_vehicles.user_id
-      WHERE users.username = $1
-      GROUP BY users.id;
-    `;
-    const result = await pool.query(query, [username]);
-    return result.rows[0] || null;
+    const result = await db.query(
+      'SELECT id, email, username, password, role FROM users WHERE username = $1',
+      [username]
+    );
+    return result.rows[0];
   }
 
   static async findById(id) {
-    const query = `
-      SELECT users.*, array_agg(user_vehicles.vin) as vehicles
-      FROM users 
-      LEFT JOIN user_vehicles ON users.id = user_vehicles.user_id
-      WHERE users.id = $1
-      GROUP BY users.id;
-    `;
-    const result = await pool.query(query, [id]);
-    return result.rows[0] || null;
+    const result = await db.query(
+      'SELECT u.id, u.email, u.username, u.role, uv.vin FROM users u LEFT JOIN user_vehicles uv ON u.id = uv.user_id WHERE u.id = $1',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return null;
+    }
+    
+    const user = {
+      id: result.rows[0].id,
+      email: result.rows[0].email,
+      username: result.rows[0].username,
+      role: result.rows[0].role,
+      vehicles: []
+    };
+    
+    // Добавляем автомобили, если они есть
+    if (result.rows.some(row => row.vin)) {
+      user.vehicles = result.rows.filter(row => row.vin).map(row => ({ vin: row.vin }));
+    }
+    
+    return user;
   }
 
-  static async verifyPassword(plainPassword, hashedPassword) {
-    return bcrypt.compare(plainPassword, hashedPassword);
+  static async verifyPassword(password, hashedPassword) {
+    return await bcrypt.compare(password, hashedPassword);
   }
 
   static generateToken(user) {

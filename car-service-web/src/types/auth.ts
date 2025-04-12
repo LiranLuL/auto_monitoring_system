@@ -15,11 +15,12 @@ export interface AuthState {
 }
 
 export interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface RegisterFormData {
+  vin: string;
   username: string;
   email: string;
   password: string;

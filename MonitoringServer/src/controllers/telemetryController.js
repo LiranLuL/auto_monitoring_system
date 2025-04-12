@@ -1,112 +1,112 @@
-const { Pool } = require('pg');
-const Vehicle = require('../models/vehicle');
+const db = require('../db');
 
-// Создаем пул соединений с PostgreSQL
-const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'car_monitoring',
-  password: process.env.DB_PASSWORD || 'postgres',
-  port: process.env.DB_PORT || 5432
-});
-
-exports.saveTelemetry = async (data, vin, role) => {
+exports.saveTelemetry = async (req, res) => {
   try {
+    const { data } = req.body;
+    const { vin } = req.user.vehicles && req.user.vehicles.length > 0 ? req.user.vehicles[0] : null;
+    const { role } = req.user;
+    
     console.log('Saving telemetry data:', { data, vin, role });
     
+    // Проверяем, что пользователь имеет роль 'user'
     if (role !== 'user') {
-      throw new Error('Access denied');
+      return res.status(403).json({ message: 'Доступ запрещен. Только пользователи могут отправлять телеметрию.' });
     }
     
+    // Проверяем наличие VIN
     if (!vin) {
       console.error('VIN not found in token');
-      throw new Error('VIN not found in token');
+      return res.status(400).json({ message: 'VIN не найден в токене. Пожалуйста, зарегистрируйте автомобиль.' });
     }
     
-    // Получаем все параметры из запроса
-    const {
-      rpm, 
-      speed, 
-      engineTemp, 
-      dtcCodes, 
-      o2Voltage, 
-      fuelPressure, 
-      intakeTemp,
-      mafSensor,
-      throttlePos,
-      engineHealth,
-      oilHealth,
-      tiresHealth,
-      brakesHealth
-    } = data;
+    // Проверяем существование автомобиля в базе данных
+    const vehicleResult = await db.query(
+      'SELECT id FROM user_vehicles WHERE vin = $1',
+      [vin]
+    );
     
-    // Создаем запись в базе данных
-    const client = await pool.connect();
-    
-    try {
-      await client.query('BEGIN');
-      
-      // Проверяем существование автомобиля по VIN
-      const vehicleCheck = await client.query(`
-        SELECT 1 FROM user_vehicles
-        WHERE vin = $1
-      `, [vin]);
-      
-      if (vehicleCheck.rows.length === 0) {
-        throw new Error(`Vehicle with VIN ${vin} not found`);
-      }
-      
-      console.log(`Vehicle with VIN ${vin} found, creating telemetry record`);
-      
-      // Создаем новую запись телеметрии
-      const telemetryQuery = `
-        INSERT INTO telemetry
-        (vin, rpm, speed, engine_temp, dtc_codes, o2_voltage, fuel_pressure, intake_temp, maf_sensor, throttle_pos, engine_health, oil_health, tires_health, brakes_health, timestamp)
-        VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
-        RETURNING id, timestamp;
-      `;
-      
-      const telemetryParams = [
-        vin,
-        rpm || 0,
-        speed || 0,
-        engineTemp || 0,
-        dtcCodes || '[]',
-        o2Voltage || 0,
-        fuelPressure || 0,
-        intakeTemp || 0,
-        mafSensor || 0,
-        throttlePos || 0,
-        engineHealth || 100,
-        oilHealth || 100,
-        tiresHealth || 100,
-        brakesHealth || 100
-      ];
-      
-      const result = await client.query(telemetryQuery, telemetryParams);
-      await client.query('COMMIT');
-      
-      console.log('Telemetry saved successfully:', result.rows[0]);
-      
-      return {
-        id: result.rows[0].id,
-        timestamp: result.rows[0].timestamp,
-        status: 'success',
-        message: 'Telemetry data saved successfully'
-      };
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Database error:', error);
-      throw error;
-    } finally {
-      client.release();
+    if (vehicleResult.rows.length === 0) {
+      console.error('Vehicle not found in database:', vin);
+      return res.status(404).json({ message: 'Автомобиль не найден в базе данных.' });
     }
+    
+    console.log('Vehicle found in database:', vehicleResult.rows[0]);
+    
+    // Сохраняем телеметрические данные
+    const result = await db.query(
+      `INSERT INTO telemetry_data 
+       (vehicle_id, rpm, speed, engine_temp, dtc_codes, o2_voltage, fuel_pressure, intake_temp, maf_sensor, throttle_pos, engine_health, oil_health, tires_health, brakes_health) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
+       RETURNING id`,
+      [
+        vehicleResult.rows[0].id,
+        data.rpm,
+        data.speed,
+        data.engineTemp,
+        data.dtcCodes,
+        data.o2Voltage,
+        data.fuelPressure,
+        data.intakeTemp,
+        data.mafSensor,
+        data.throttlePos,
+        data.engineHealth,
+        data.oilHealth,
+        data.tiresHealth,
+        data.brakesHealth
+      ]
+    );
+    
+    console.log('Telemetry data saved successfully:', result.rows[0]);
+    
+    res.status(201).json({ message: 'Телеметрические данные успешно сохранены', id: result.rows[0].id });
   } catch (error) {
     console.error('Error saving telemetry:', error);
-    throw {
-      status: 'error',
-      message: error.message || 'Internal server error'
-    };
+    res.status(500).json({ message: 'Ошибка при сохранении телеметрических данных', error: error.message });
+  }
+};
+
+exports.getTelemetry = async (req, res) => {
+  try {
+    const { vin } = req.user.vehicles && req.user.vehicles.length > 0 ? req.user.vehicles[0] : null;
+    const { role } = req.user;
+    
+    console.log('Getting telemetry data:', { vin, role });
+    
+    // Проверяем наличие VIN
+    if (!vin) {
+      console.error('VIN not found in token');
+      return res.status(400).json({ message: 'VIN не найден в токене. Пожалуйста, зарегистрируйте автомобиль.' });
+    }
+    
+    // Проверяем существование автомобиля в базе данных
+    const vehicleResult = await db.query(
+      'SELECT id FROM user_vehicles WHERE vin = $1',
+      [vin]
+    );
+    
+    if (vehicleResult.rows.length === 0) {
+      console.error('Vehicle not found in database:', vin);
+      return res.status(404).json({ message: 'Автомобиль не найден в базе данных.' });
+    }
+    
+    // Получаем последние телеметрические данные
+    const result = await db.query(
+      `SELECT * FROM telemetry_data 
+       WHERE vehicle_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT 1`,
+      [vehicleResult.rows[0].id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Телеметрические данные не найдены.' });
+    }
+    
+    console.log('Telemetry data retrieved successfully');
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error getting telemetry:', error);
+    res.status(500).json({ message: 'Ошибка при получении телеметрических данных', error: error.message });
   }
 }; 

@@ -1,54 +1,37 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const User = require('../models/user');
+require('dotenv').config();
 
-dotenv.config();
-
-const auth = {
-  verifyToken: (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-
-    if (!authHeader) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    console.log('Processing token in middleware');
+module.exports = async (req, res, next) => {
+  try {
+    // Получаем токен из заголовка
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        console.error('Token verification error:', err);
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-      
-      console.log('Token verified, decoded payload:', decoded);
-      
-      req.userId = decoded.userId;
-      req.vin = decoded.vin;
-      req.role = decoded.role;
-      
-      console.log('Request context set:', { 
-        userId: req.userId, 
-        vin: req.vin, 
-        role: req.role 
-      });
-      
-      next();
-    });
-  },
-
-  checkRole: (roles) => {
-    return (req, res, next) => {
-      if (!req.userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-
-      if (!roles.includes(req.role)) {
-        return res.status(403).json({ error: 'Access denied' });
-      }
-
-      next();
-    };
+    if (!token) {
+      return res.status(401).json({ message: 'Требуется авторизация' });
+    }
+    
+    console.log('Processing token:', token);
+    
+    // Проверяем токен
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded token payload:', decoded);
+    
+    // Находим пользователя
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: 'Пользователь не найден' });
+    }
+    
+    // Добавляем информацию о пользователе в запрос
+    req.user = user;
+    req.token = token;
+    
+    console.log('Request context:', { userId: user.id, vin: user.vehicles && user.vehicles.length > 0 ? user.vehicles[0].vin : null, role: user.role });
+    
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ message: 'Ошибка авторизации', error: error.message });
   }
-};
-
-module.exports = auth; 
+}; 

@@ -387,20 +387,20 @@ fun OdometerApp(mainActivity: MainActivity) {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
                 Text(
                     text = "Мониторинг автомобиля",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
                 
-                Button(
-                    onClick = {
+        Button(
+            onClick = {
                         if (isCollecting) {
                             mainActivity.stopDataCollection()
                             isCollecting = false
@@ -421,9 +421,9 @@ fun OdometerApp(mainActivity: MainActivity) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = connectionStatus,
-                    style = MaterialTheme.typography.bodyLarge,
+        Text(
+            text = connectionStatus,
+            style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -453,11 +453,11 @@ fun OdometerApp(mainActivity: MainActivity) {
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column {
-                                        Text(
+        Text(
                                             text = "Скорость",
                                             style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Text(
+        )
+        Text(
                                             text = "$speedValue км/ч",
                                             style = MaterialTheme.typography.headlineMedium,
                                             color = MaterialTheme.colorScheme.primary
@@ -465,11 +465,11 @@ fun OdometerApp(mainActivity: MainActivity) {
                                     }
                                     
                                     Column {
-                                        Text(
+        Text(
                                             text = "Обороты",
                                             style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Text(
+        )
+        Text(
                                             text = "$rpmValue об/мин",
                                             style = MaterialTheme.typography.headlineMedium,
                                             color = MaterialTheme.colorScheme.primary
@@ -490,7 +490,7 @@ fun OdometerApp(mainActivity: MainActivity) {
                             Column(
                                 modifier = Modifier.padding(16.dp)
                             ) {
-                                Text(
+        Text(
                                     text = "Здоровье компонентов",
                                     style = MaterialTheme.typography.titleMedium,
                                     modifier = Modifier.padding(bottom = 8.dp)
@@ -514,7 +514,7 @@ fun OdometerApp(mainActivity: MainActivity) {
                             Column(
                                 modifier = Modifier.padding(16.dp)
                             ) {
-                                Text(
+        Text(
                                     text = "Температура",
                                     style = MaterialTheme.typography.titleMedium,
                                     modifier = Modifier.padding(bottom = 8.dp)
@@ -525,11 +525,11 @@ fun OdometerApp(mainActivity: MainActivity) {
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column {
-                                        Text(
+        Text(
                                             text = "Двигатель",
                                             style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Text(
+        )
+        Text(
                                             text = "$engineTempValue°C",
                                             style = MaterialTheme.typography.titleLarge,
                                             color = when {
@@ -541,7 +541,7 @@ fun OdometerApp(mainActivity: MainActivity) {
                                     }
                                     
                                     Column {
-                                        Text(
+        Text(
                                             text = "Впускной коллектор",
                                             style = MaterialTheme.typography.bodyMedium
                                         )
@@ -603,7 +603,7 @@ fun OdometerApp(mainActivity: MainActivity) {
                                     
                                     Text(
                                         text = dtcCodesValue.replace("[", "").replace("]", "").replace("\"", ""),
-                                        style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onErrorContainer
                                     )
                                 }
@@ -1133,8 +1133,8 @@ private suspend fun sendToBackend(context: Context, data: JSONObject) {
             throw Exception("Error sending telemetry data. Response code: $responseCode")
         }
 
-        val response = connection.inputStream.bufferedReader().use { it.readText() }
-        Log.d("API", "Data sent successfully: $response")
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                Log.d("API", "Data sent successfully: $response")
     } catch (e: Exception) {
         Log.e("API", "Connection error: ${e.localizedMessage}")
         throw e

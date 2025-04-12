@@ -3,11 +3,7 @@ const router = express.Router();
 const telemetryController = require('../controllers/telemetryController');
 const auth = require('../middleware/auth');
 
-// Сохранение данных телеметрии
-router.post('/', auth.verifyToken, (req, res) => {
-  telemetryController.saveTelemetry(req.body, req.vin, req.role)
-    .then(data => res.json(data))
-    .catch(err => res.status(500).json(err));
-});
+// Маршрут для сохранения телеметрических данных (требуется аутентификация)
+router.post('/save', auth, telemetryController.saveTelemetry);
 
 module.exports = router; 

@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const workController = require('../controllers/work');
 const authController = require('../controllers/authController');
 const vehicleController = require('../controllers/vehicle');
+const telemetryController = require('../controllers/telemetryController');
 
 // Маршруты для техников
 router.post('/elm327-data', 
@@ -12,45 +13,56 @@ router.post('/elm327-data',
 );
 
 router.get('/vehicle-health/:vehicleId', 
-  auth.verifyToken, 
+  auth, 
   sensorController.getVehicleHealth
 );
 
 router.get('/vehicles', 
-  auth.verifyToken, 
+  auth, 
   sensorController.getAllVehicles
 );
 
 // Маршруты только для администраторов
 router.post('/predict', 
-  auth.verifyToken, 
-  auth.checkRole(['admin']), 
+  auth, 
+  (req, res, next) => {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Доступ запрещен. Требуются права администратора.' });
+    }
+    next();
+  }, 
   sensorController.getPredictions
 );
 
 // Маршруты для работ
-router.post('/works', auth.verifyToken, workController.createWork);
-router.get('/works/vehicle/:vehicleId', auth.verifyToken, workController.getVehicleWorks);
-router.get('/works/technician', auth.verifyToken, workController.getTechnicianWorks);
-router.put('/works/:workId/status', auth.verifyToken, workController.updateWorkStatus);
-router.get('/works/:workId', auth.verifyToken, workController.getWorkDetails);
+router.post('/works', auth, workController.createWork);
+router.get('/works/vehicle/:vehicleId', auth, workController.getVehicleWorks);
+router.get('/works/technician', auth, workController.getTechnicianWorks);
+router.put('/works/:workId/status', auth, workController.updateWorkStatus);
+router.get('/works/:workId', auth, workController.getWorkDetails);
 
 // Маршруты аутентификации
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
-router.get('/auth/user', auth.verifyToken, authController.getCurrentUser);
+router.get('/auth/user', auth, authController.getCurrentUser);
 
 // Маршруты для автомобилей
-router.get('/vehicles/search', auth.verifyToken, vehicleController.searchVehicle);
-router.post('/vehicles', auth.verifyToken, vehicleController.createVehicle);
-router.get('/vehicles', auth.verifyToken, vehicleController.getAllVehicles);
-router.put('/vehicles/:id', auth.verifyToken, vehicleController.updateVehicle);
-router.post('/vehicles/:vehicleId/health', auth.verifyToken, vehicleController.saveHealthData);
+router.post('/vehicles/search', auth, vehicleController.searchVehicle);
+router.post('/vehicles', auth, vehicleController.createVehicle);
+router.get('/vehicles', auth, vehicleController.getAllVehicles);
+router.put('/vehicles/:id', auth, vehicleController.updateVehicle);
+router.post('/vehicles/:vehicleId/health', auth, vehicleController.saveHealthData);
 
 // Маршруты для датчиков
-router.post('/elm327-data', auth.verifyToken, sensorController.saveData);
-router.get('/vehicle-health/:vehicleId', auth.verifyToken, sensorController.getVehicleHealth);
-router.post('/vehicles/:vehicleId/sensor-token', auth.verifyToken, sensorController.generateSensorToken);
+router.post('/elm327-data', auth, sensorController.saveData);
+router.get('/vehicle-health/:vehicleId', auth, sensorController.getVehicleHealth);
+router.post('/vehicles/:vehicleId/sensor-token', auth, sensorController.generateSensorToken);
 router.get('/vehicles/vin/:vin/sensor-token', sensorController.getTokenByVin);
+
+// Маршрут для получения телеметрических данных (требуется аутентификация)
+router.get('/telemetry', auth, telemetryController.getTelemetry);
+
+// Маршрут для сохранения телеметрических данных (требуется аутентификация)
+router.post('/telemetry', auth, telemetryController.saveTelemetry);
 
 module.exports = router;

@@ -8,7 +8,7 @@ const Dashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="px-4 py-6 sm:px-0">
         <h1 className="text-3xl font-bold text-gray-900">
-          Welcome, {user?.username}!
+          Добро пожаловать, {user?.username}!
         </h1>
         
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -24,7 +24,7 @@ const Dashboard: React.FC = () => {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">
-                      Total Vehicles
+                      Всего автомобилей
                     </dt>
                     <dd className="text-lg font-medium text-gray-900">
                       0
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">
-                      Active Alerts
+                      Активные оповещения
                     </dt>
                     <dd className="text-lg font-medium text-gray-900">
                       0

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { LoginPage } from './pages/LoginPage';
+import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import Dashboard from './pages/Dashboard';
 import WorkManagement from './pages/WorkManagement';
@@ -21,7 +21,7 @@ const App: React.FC = () => {
           <Toaster position="top-right" />
           <Navigation />
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/register-technician" element={<RegisterTechnician />} />
             <Route
@@ -72,7 +72,7 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<Navigate to="/register-technician" replace />} />
           </Routes>
         </div>
       </Router>

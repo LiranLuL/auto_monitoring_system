@@ -22,9 +22,7 @@ api.interceptors.request.use((config) => {
 export const vehicleService = {
   // Поиск автомобиля
   async searchVehicle({ vin, ownerPhone }: { vin?: string; ownerPhone?: string }) {
-    const response = await api.get(API_ENDPOINTS.vehicles.search, {
-      params: { vin, ownerPhone }
-    });
+    const response = await api.post(API_ENDPOINTS.vehicles.search, { vin, ownerPhone });
     return response.data;
   },
 
@@ -61,5 +59,19 @@ export const vehicleService = {
   }) {
     const response = await api.post(API_ENDPOINTS.vehicles.saveHealth(vehicleId), healthData);
     return response.data;
+  }
+};
+
+// Поиск автомобиля
+export const searchVehicle = async (vin: string, ownerPhone: string) => {
+  try {
+    const response = await api.post(API_ENDPOINTS.vehicles.search, {
+      vin,
+      ownerPhone
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching vehicle:', error);
+    throw error;
   }
 }; 

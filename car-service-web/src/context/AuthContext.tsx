@@ -101,6 +101,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const userData = await refreshUserData();
         if (!userData) {
           console.error('AuthContext: Failed to load user data after login');
+          
+          // Если не удалось получить данные через refreshUserData, используем данные из ответа
+          if (response.user) {
+            console.log('AuthContext: Using user data from login response');
+            setUser(response.user);
+            return;
+          }
+          
           throw new Error('Failed to load user data');
         }
       } else {
@@ -143,6 +151,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const userData = await refreshUserData();
         if (!userData) {
           console.error('AuthContext: Failed to load user data after registration');
+          
+          // Если не удалось получить данные через refreshUserData, используем данные из ответа
+          if (response.user) {
+            console.log('AuthContext: Using user data from registration response');
+            setUser(response.user);
+            return;
+          }
+          
           throw new Error('Failed to load user data');
         }
       } else {
@@ -185,6 +201,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const userData = await refreshUserData();
         if (!userData) {
           console.error('AuthContext: Failed to load user data after technician registration');
+          
+          // Если не удалось получить данные через refreshUserData, используем данные из ответа
+          if (response.user) {
+            console.log('AuthContext: Using user data from registration response');
+            setUser(response.user);
+            return;
+          }
+          
           throw new Error('Failed to load user data');
         }
       } else {
