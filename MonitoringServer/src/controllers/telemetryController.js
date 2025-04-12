@@ -2,7 +2,7 @@ const db = require('../db');
 
 exports.saveTelemetry = async (req, res) => {
   try {
-    const { data } = req.body;
+    const  data  = req.body;
     const { vin } = req.user.vehicles && req.user.vehicles.length > 0 ? req.user.vehicles[0] : null;
     const { role } = req.user;
     
@@ -27,11 +27,11 @@ exports.saveTelemetry = async (req, res) => {
     
     if (vehicleResult.rows.length === 0) {
       console.error('Vehicle not found in database:', vin);
-      return res.status(404).json({ message: 'Автомобиль не найден в базе данных.' });
+      return res.status(405).json({ message: 'Автомобиль не найден в базе данных.' });
     }
     
     console.log('Vehicle found in database:', vehicleResult.rows[0]);
-    
+    console.log('Telemetry data:', data);
     // Сохраняем телеметрические данные
     const result = await db.query(
       `INSERT INTO telemetry_data 
@@ -58,7 +58,7 @@ exports.saveTelemetry = async (req, res) => {
     
     console.log('Telemetry data saved successfully:', result.rows[0]);
     
-    res.status(201).json({ message: 'Телеметрические данные успешно сохранены', id: result.rows[0].id });
+    res.status(200).json({ message: 'Телеметрические данные успешно сохранены', id: result.rows[0].id });
   } catch (error) {
     console.error('Error saving telemetry:', error);
     res.status(500).json({ message: 'Ошибка при сохранении телеметрических данных', error: error.message });

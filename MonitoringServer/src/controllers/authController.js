@@ -12,7 +12,7 @@ const authController = {
 
       // Проверяем, существует ли пользователь с таким email
       const existingUser = await User.findByEmail(email);
-      console.log(existingUsername);
+      
 
       if (existingUser) {
         return res.status(400).json({ message: "Пользователь с таким email уже существует" });

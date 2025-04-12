@@ -8,7 +8,7 @@ class WorkController {
       const technicianId = req.user.id; // Получаем ID техника из JWT токена
 
       // Проверяем существование автомобиля
-      const vehicle = await Vehicle.getById(vehicleId);
+      const vehicle = await Vehicle.findById(vehicleId);
       if (!vehicle) {
         return res.status(404).json({ error: 'Vehicle not found' });
       }

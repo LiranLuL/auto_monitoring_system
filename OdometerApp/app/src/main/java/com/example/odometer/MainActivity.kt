@@ -1112,7 +1112,7 @@ private suspend fun sendToBackend(context: Context, data: JSONObject) {
         val token = context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("jwt_token", null)
             ?: throw Exception("JWT token not found")
             
-        val url = URL("http://192.168.0.121:5000/telemetry")
+        val url = URL("http://192.168.0.121:5000/api/telemetry")
         val connection = url.openConnection() as HttpURLConnection
         
         connection.apply {
