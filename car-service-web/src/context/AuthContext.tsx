@@ -228,7 +228,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     console.log('AuthContext: Logging out');
-    authApi.logout();
+    localStorage.removeItem('token');
     setUser(null);
   };
 
