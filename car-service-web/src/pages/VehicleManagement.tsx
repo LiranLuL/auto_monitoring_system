@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Vehicle } from '../types/models';
 import { vehicleService } from '../services/vehicleService';
 import { toast } from 'react-hot-toast';
+import cars from '../data/cars.json';
 
 const VehicleManagement: React.FC = () => {
   // Состояние для списка автомобилей
@@ -41,6 +42,10 @@ const VehicleManagement: React.FC = () => {
     }
   });
 
+  const [carMakes, setCarMakes] = useState<{ id: string; name: string }[]>([]);
+  const [carModels, setCarModels] = useState<{ id: string; name: string }[]>([]);
+  const [selectedMake, setSelectedMake] = useState<string>('');
+
   useEffect(() => {
     loadVehicles();
   }, []);
@@ -60,6 +65,27 @@ const VehicleManagement: React.FC = () => {
       setCurrentPage(totalPages);
     }
   }, [filteredVehicles, itemsPerPage, currentPage]);
+
+  // Загрузка списка марок авто при монтировании компонента
+  useEffect(() => {
+    const makes = cars.map(car => ({ id: car.id, name: car.name }));
+    setCarMakes(makes);
+  }, []);
+  
+  // При выборе марки обновляем список моделей
+  useEffect(() => {
+    if (selectedMake) {
+      const selectedCarMake = cars.find(car => car.id === selectedMake);
+      if (selectedCarMake) {
+        const models = selectedCarMake.models.map(model => ({ id: model.id, name: model.name }));
+        setCarModels(models);
+      } else {
+        setCarModels([]);
+      }
+    } else {
+      setCarModels([]);
+    }
+  }, [selectedMake]);
 
   const loadVehicles = async () => {
     try {
@@ -131,10 +157,34 @@ const VehicleManagement: React.FC = () => {
     setSearchOwnerPhone('');
   };
 
+  // При выборе автомобиля для редактирования
+  const handleSelectVehicleForEdit = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setIsEditing(true);
+    
+    // Находим марку авто по имени
+    const makeObj = cars.find(car => car.name.toLowerCase() === vehicle.make.toLowerCase());
+    const makeId = makeObj ? makeObj.id : '';
+    setSelectedMake(makeId);
+    
+    setFormData({
+      vin: vehicle.vin,
+      make: vehicle.make,
+      model: vehicle.model,
+      plate_number: vehicle.plate_number,
+      owner_phone: vehicle.owner_phone,
+      mileage: vehicle.mileage,
+      lastServiceDate: vehicle.lastServiceDate ? new Date(vehicle.lastServiceDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      healthStatus: vehicle.healthStatus
+    });
+  };
+  
+  // При добавлении нового авто
   const handleAddNew = () => {
+    setSelectedVehicle(null);
     setIsAdding(true);
     setIsEditing(false);
-    setSelectedVehicle(null);
+    setSelectedMake('');
     setFormData({
       vin: '',
       make: '',
@@ -150,6 +200,39 @@ const VehicleManagement: React.FC = () => {
         brakes: 100
       }
     });
+  };
+  
+  // При изменении выбранной марки
+  const handleMakeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const makeId = e.target.value;
+    setSelectedMake(makeId);
+    
+    // Если выбрана марка, устанавливаем её имя в formData
+    if (makeId) {
+      const selectedMakeObj = cars.find(car => car.id === makeId);
+      if (selectedMakeObj) {
+        setFormData(prev => ({ ...prev, make: selectedMakeObj.name, model: '' }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, make: '', model: '' }));
+    }
+  };
+  
+  // При изменении выбранной модели
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const modelId = e.target.value;
+    
+    if (modelId && selectedMake) {
+      const selectedMakeObj = cars.find(car => car.id === selectedMake);
+      if (selectedMakeObj) {
+        const selectedModelObj = selectedMakeObj.models.find(model => model.id === modelId);
+        if (selectedModelObj) {
+          setFormData(prev => ({ ...prev, model: selectedModelObj.name }));
+        }
+      }
+    } else {
+      setFormData(prev => ({ ...prev, model: '' }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -325,44 +408,6 @@ const VehicleManagement: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Поиск и фильтрация автомобилей</h2>
-          <button
-            onClick={clearFilters}
-            className="text-gray-600 text-sm hover:text-indigo-600"
-          >
-            Очистить фильтры
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">VIN</label>
-            <input
-              type="text"
-              value={searchVin}
-              onChange={(e) => setSearchVin(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Телефон владельца</label>
-            <input
-              type="text"
-              value={searchOwnerPhone}
-              onChange={(e) => setSearchOwnerPhone(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-        <button
-          onClick={handleSearch}
-          className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-        >
-          Применить фильтр
-        </button>
-      </div>
-
       {(isAdding || isEditing) && (
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">
@@ -382,23 +427,32 @@ const VehicleManagement: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Марка</label>
-                <input
-                  type="text"
-                  value={formData.make}
-                  onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+                <select
+                  value={selectedMake}
+                  onChange={handleMakeChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
-                />
+                >
+                  <option value="">Выберите марку</option>
+                  {carMakes.map(make => (
+                    <option key={make.id} value={make.id}>{make.name}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Модель</label>
-                <input
-                  type="text"
-                  value={formData.model}
-                  onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                <select
+                  value={carModels.find(model => model.name === formData.model)?.id || ''}
+                  onChange={handleModelChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
-                />
+                  disabled={!selectedMake}
+                >
+                  <option value="">Выберите модель</option>
+                  {carModels.map(model => (
+                    <option key={model.id} value={model.id}>{model.name}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Номерной знак</label>
@@ -510,7 +564,6 @@ const VehicleManagement: React.FC = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Номерной знак</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Телефон владельца</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Пробег</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Последнее обслуживание</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
@@ -523,25 +576,10 @@ const VehicleManagement: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{vehicle.plate_number}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{vehicle.owner_phone}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{vehicle.mileage}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {vehicle.lastServiceDate ? new Date(vehicle.lastServiceDate).toLocaleDateString() : 'Нет данных'}
-                  </td>
+                  
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => {
-                        setSelectedVehicle(vehicle);
-                        setIsEditing(true);
-                        setFormData({
-                          vin: vehicle.vin,
-                          make: vehicle.make,
-                          model: vehicle.model,
-                          plate_number: vehicle.plate_number,
-                          owner_phone: vehicle.owner_phone,
-                          mileage: vehicle.mileage,
-                          lastServiceDate: vehicle.lastServiceDate ? new Date(vehicle.lastServiceDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-                          healthStatus: vehicle.healthStatus
-                        });
-                      }}
+                      onClick={() => handleSelectVehicleForEdit(vehicle)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       Редактировать

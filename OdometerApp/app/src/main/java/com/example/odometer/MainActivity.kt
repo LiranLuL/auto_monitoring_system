@@ -33,6 +33,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+
+// Используем локальную версию BluetoothDeviceSelectionActivity
+// import com.example.odometerapp.BluetoothDeviceSelectionActivity
 
 class MainActivity : ComponentActivity() {
     private var dataCollectionJob: Job? = null
@@ -171,7 +179,6 @@ class MainActivity : ComponentActivity() {
             delay(100)
             
             val mafResponse = sendCommand(socket, "0110")
-            delay(100)
             
             val throttleResponse = sendCommand(socket, "0111")
             
@@ -375,6 +382,7 @@ fun OdometerApp(mainActivity: MainActivity) {
     val brakesHealthValue by mainActivity.brakesHealthValue.collectAsState()
     
     var isCollecting by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     
     // Эффект для отслеживания статуса сбора данных
     LaunchedEffect(connectionStatus) {
@@ -411,7 +419,7 @@ fun OdometerApp(mainActivity: MainActivity) {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(horizontal = 8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (isCollecting) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
                     )
@@ -420,6 +428,25 @@ fun OdometerApp(mainActivity: MainActivity) {
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        val intent = Intent(context, BluetoothSelection::class.java)
+                        // Добавляем токен в Intent для обеспечения непрерывности авторизации
+                        val token = context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("jwt_token", null)
+                        if (token != null) {
+                            intent.putExtra("token", token)
+                        }
+                        context.startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                ) {
+                    Text("Выбрать Bluetooth устройство")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = connectionStatus,

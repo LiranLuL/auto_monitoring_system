@@ -1,0 +1,141 @@
+[
+  {
+    "id": "AUDI",
+    "name": "Audi",
+    "cyrillic-name": "Ауди",
+    "popular": true,
+    "country": "Германия",
+    "models": [
+      { "id": "AUDI_A3", "name": "A3", "cyrillic-name": "А3" },
+      { "id": "AUDI_A4", "name": "A4", "cyrillic-name": "А4" },
+      { "id": "AUDI_A6", "name": "A6", "cyrillic-name": "А6" },
+      { "id": "AUDI_Q3", "name": "Q3", "cyrillic-name": "Ку3" },
+      { "id": "AUDI_Q5", "name": "Q5", "cyrillic-name": "Ку5" },
+      { "id": "AUDI_Q7", "name": "Q7", "cyrillic-name": "Ку7" }
+    ]
+  },
+  {
+    "id": "BMW",
+    "name": "BMW",
+    "cyrillic-name": "БМВ",
+    "popular": true,
+    "country": "Германия",
+    "models": [
+      { "id": "BMW_1ER", "name": "1 серии", "cyrillic-name": "1 серии" },
+      { "id": "BMW_3ER", "name": "3 серии", "cyrillic-name": "3 серии" },
+      { "id": "BMW_5ER", "name": "5 серии", "cyrillic-name": "5 серии" },
+      { "id": "BMW_7ER", "name": "7 серии", "cyrillic-name": "7 серии" },
+      { "id": "BMW_X3", "name": "X3", "cyrillic-name": "Икс 3" },
+      { "id": "BMW_X5", "name": "X5", "cyrillic-name": "Икс 5" }
+    ]
+  },
+  {
+    "id": "MERCEDES",
+    "name": "Mercedes-Benz",
+    "cyrillic-name": "Мерседес-Бенц",
+    "popular": true,
+    "country": "Германия",
+    "models": [
+      { "id": "MERCEDES_A_KLASSE", "name": "A-класс", "cyrillic-name": "А-класс" },
+      { "id": "MERCEDES_C_KLASSE", "name": "C-класс", "cyrillic-name": "C-класс" },
+      { "id": "MERCEDES_E_KLASSE", "name": "E-класс", "cyrillic-name": "Е-класс" },
+      { "id": "MERCEDES_S_KLASSE", "name": "S-класс", "cyrillic-name": "С-класс" },
+      { "id": "MERCEDES_GLC", "name": "GLC", "cyrillic-name": "ГЛЦ" },
+      { "id": "MERCEDES_GLE", "name": "GLE", "cyrillic-name": "ГЛЕ" }
+    ]
+  },
+  {
+    "id": "TOYOTA",
+    "name": "Toyota",
+    "cyrillic-name": "Тойота",
+    "popular": true,
+    "country": "Япония",
+    "models": [
+      { "id": "TOYOTA_CAMRY", "name": "Camry", "cyrillic-name": "Камри" },
+      { "id": "TOYOTA_COROLLA", "name": "Corolla", "cyrillic-name": "Королла" },
+      { "id": "TOYOTA_RAV4", "name": "RAV4", "cyrillic-name": "РАВ4" },
+      { "id": "TOYOTA_LAND_CRUISER", "name": "Land Cruiser", "cyrillic-name": "Ленд Крузер" },
+      { "id": "TOYOTA_PRIUS", "name": "Prius", "cyrillic-name": "Приус" }
+    ]
+  },
+  {
+    "id": "HONDA",
+    "name": "Honda",
+    "cyrillic-name": "Хонда",
+    "popular": true,
+    "country": "Япония",
+    "models": [
+      { "id": "HONDA_ACCORD", "name": "Accord", "cyrillic-name": "Аккорд" },
+      { "id": "HONDA_CIVIC", "name": "Civic", "cyrillic-name": "Цивик" },
+      { "id": "HONDA_CRV", "name": "CR-V", "cyrillic-name": "СР-В" },
+      { "id": "HONDA_HRV", "name": "HR-V", "cyrillic-name": "ХР-В" }
+    ]
+  },
+  {
+    "id": "LADA",
+    "name": "Lada",
+    "cyrillic-name": "Лада",
+    "popular": true,
+    "country": "Россия",
+    "models": [
+      { "id": "LADA_GRANTA", "name": "Granta", "cyrillic-name": "Гранта" },
+      { "id": "LADA_VESTA", "name": "Vesta", "cyrillic-name": "Веста" },
+      { "id": "LADA_XRAY", "name": "XRAY", "cyrillic-name": "Икс-рей" },
+      { "id": "LADA_LARGUS", "name": "Largus", "cyrillic-name": "Ларгус" },
+      { "id": "LADA_NIVA", "name": "Niva", "cyrillic-name": "Нива" }
+    ]
+  },
+  {
+    "id": "KIA",
+    "name": "Kia",
+    "cyrillic-name": "Киа",
+    "popular": true,
+    "country": "Южная Корея",
+    "models": [
+      { "id": "KIA_RIO", "name": "Rio", "cyrillic-name": "Рио" },
+      { "id": "KIA_SPORTAGE", "name": "Sportage", "cyrillic-name": "Спортейдж" },
+      { "id": "KIA_CEED", "name": "Ceed", "cyrillic-name": "Сид" },
+      { "id": "KIA_SORENTO", "name": "Sorento", "cyrillic-name": "Соренто" }
+    ]
+  },
+  {
+    "id": "HYUNDAI",
+    "name": "Hyundai",
+    "cyrillic-name": "Хёндэ",
+    "popular": true,
+    "country": "Южная Корея",
+    "models": [
+      { "id": "HYUNDAI_SOLARIS", "name": "Solaris", "cyrillic-name": "Солярис" },
+      { "id": "HYUNDAI_CRETA", "name": "Creta", "cyrillic-name": "Крета" },
+      { "id": "HYUNDAI_TUCSON", "name": "Tucson", "cyrillic-name": "Туссан" },
+      { "id": "HYUNDAI_SANTAFE", "name": "Santa Fe", "cyrillic-name": "Санта Фе" }
+    ]
+  },
+  {
+    "id": "VOLKSWAGEN",
+    "name": "Volkswagen",
+    "cyrillic-name": "Фольксваген",
+    "popular": true,
+    "country": "Германия",
+    "models": [
+      { "id": "VOLKSWAGEN_POLO", "name": "Polo", "cyrillic-name": "Поло" },
+      { "id": "VOLKSWAGEN_GOLF", "name": "Golf", "cyrillic-name": "Гольф" },
+      { "id": "VOLKSWAGEN_PASSAT", "name": "Passat", "cyrillic-name": "Пассат" },
+      { "id": "VOLKSWAGEN_TIGUAN", "name": "Tiguan", "cyrillic-name": "Тигуан" },
+      { "id": "VOLKSWAGEN_TOUAREG", "name": "Touareg", "cyrillic-name": "Туарег" }
+    ]
+  },
+  {
+    "id": "NISSAN",
+    "name": "Nissan",
+    "cyrillic-name": "Ниссан",
+    "popular": true,
+    "country": "Япония",
+    "models": [
+      { "id": "NISSAN_ALMERA", "name": "Almera", "cyrillic-name": "Альмера" },
+      { "id": "NISSAN_XTRAIL", "name": "X-Trail", "cyrillic-name": "Икс-Трейл" },
+      { "id": "NISSAN_QASHQAI", "name": "Qashqai", "cyrillic-name": "Кашкай" },
+      { "id": "NISSAN_JUKE", "name": "Juke", "cyrillic-name": "Жук" }
+    ]
+  }
+] 

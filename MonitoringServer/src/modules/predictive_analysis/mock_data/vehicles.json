@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "vin": "SAMPLEVIN12345",
+    "make": "Test",
+    "model": "Simulator",
+    "plate_number": "TEST123",
+    "owner_phone": "+1234567890",
+    "created_at": "2025-04-15T23:29:58.612038"
+  }
+]

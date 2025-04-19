@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "vehicle_id": 1,
+    "rpm": 2000,
+    "speed": 60,
+    "engine_temp": 90.5,
+    "dtc_codes": "P0100,P0101",
+    "o2_voltage": 0.85,
+    "fuel_pressure": 45.2,
+    "intake_temp": 35.0,
+    "maf_sensor": 15.6,
+    "throttle_pos": 25.0,
+    "created_at": "2025-04-15T23:29:58.612542"
+  }
+]

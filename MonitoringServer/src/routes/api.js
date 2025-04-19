@@ -6,6 +6,8 @@ const workController = require('../controllers/work');
 const authController = require('../controllers/authController');
 const vehicleController = require('../controllers/vehicle');
 const telemetryController = require('../controllers/telemetryController');
+const userController = require('../controllers/userController');
+const analysisController = require('../controllers/analysisController');
 
 // Маршруты для техников
 router.post('/elm327-data', 
@@ -64,5 +66,22 @@ router.get('/telemetry', auth, telemetryController.getTelemetry);
 
 // Маршрут для сохранения телеметрических данных (требуется аутентификация)
 router.post('/telemetry', auth, telemetryController.saveTelemetry);
+
+// Маршруты пользователя
+router.get('/profile', auth, userController.getUserProfile);
+router.put('/profile', auth, userController.updateUserProfile);
+router.delete('/profile', auth, userController.deleteUserProfile);
+
+// Маршруты автомобилей
+router.get('/vehicles/:vehicleId', auth, vehicleController.getVehicleById);
+router.delete('/vehicles/:vehicleId', auth, vehicleController.deleteVehicle);
+router.get('/vehicles/search/by-owner', auth, vehicleController.searchVehicleByOwner);
+router.get('/vehicles/search/by-vin', auth, vehicleController.searchVehicleByVin);
+
+// Маршруты предиктивного анализа
+router.post('/analysis/vehicle/:vehicleId/analyze', auth, analysisController.requestAnalysis);
+router.get('/analysis/vehicle/:vehicleId/latest', auth, analysisController.getLatestAnalysis);
+router.get('/analysis/vehicle/:vehicleId/history', auth, analysisController.getAnalysisHistory);
+router.post('/analysis/full', auth, analysisController.runFullAnalysis);
 
 module.exports = router;

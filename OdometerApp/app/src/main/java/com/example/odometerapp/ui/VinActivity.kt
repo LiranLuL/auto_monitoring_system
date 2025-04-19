@@ -31,6 +31,8 @@ class VinActivity : AppCompatActivity() {
                     .apply()
 
                 Toast.makeText(this, "Токен успешно получен", Toast.LENGTH_SHORT).show()
+                
+                // Возвращаем просто finish()
                 finish()
             }
         }

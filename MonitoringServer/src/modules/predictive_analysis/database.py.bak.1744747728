@@ -1,0 +1,260 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import logging
+import psycopg2
+import psycopg2.extras
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Set up logging
+logger = logging.getLogger("Database")
+
+class Database:
+    """
+    Класс для работы с базой данных PostgreSQL.
+    Обеспечивает соединение с БД и выполнение запросов.
+    """
+    
+    def __init__(self):
+        """
+        Инициализирует соединение с базой данных, используя параметры из .env файла.
+        """
+        try:
+            self.conn_params = {
+                'host': os.getenv('DB_HOST', 'localhost'),
+                'port': os.getenv('DB_PORT', '5432'),
+                'database': os.getenv('DB_NAME', 'auto_monitoring'),
+                'user': os.getenv('DB_USER', 'postgres'),
+                'password': os.getenv('DB_PASS', 'postgres')
+            }
+            
+            # Проверяем соединение, но не держим его открытым постоянно
+            conn = self._get_connection()
+            conn.close()
+            
+            logger.info("Successfully connected to the database")
+        
+        except Exception as e:
+            logger.error(f"Database initialization error: {str(e)}")
+            raise e
+    
+    def _get_connection(self):
+        """
+        Создает и возвращает новое соединение с базой данных.
+        """
+        try:
+            conn = psycopg2.connect(**self.conn_params)
+            return conn
+        except Exception as e:
+            logger.error(f"Connection error: {str(e)}")
+            raise e
+    
+    def execute_query(self, query, params=None, fetch=True):
+        """
+        Выполняет SQL-запрос к базе данных.
+        
+        Args:
+            query (str): SQL-запрос
+            params (tuple, optional): Параметры для SQL-запроса
+            fetch (bool, optional): Нужно ли возвращать результаты запроса
+            
+        Returns:
+            list: Результат запроса в виде списка словарей
+        """
+        conn = None
+        cursor = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            
+            cursor.execute(query, params)
+            
+            if fetch:
+                results = cursor.fetchall()
+                return [dict(row) for row in results]
+            else:
+                conn.commit()
+                return True
+                
+        except Exception as e:
+            logger.error(f"Query execution error: {str(e)}")
+            if conn:
+                conn.rollback()
+            raise e
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+    
+    def get_all_vehicles(self):
+        """
+        Получает список всех автомобилей из базы данных.
+        
+        Returns:
+            list: Список словарей с информацией об автомобилях
+        """
+        query = """
+        SELECT * FROM vehicles
+        """
+        
+        try:
+            return self.execute_query(query)
+        except Exception as e:
+            logger.error(f"Error getting vehicles: {str(e)}")
+            return []
+    
+    def get_vehicle_by_id(self, vehicle_id):
+        """
+        Получает информацию о автомобиле по его ID.
+        
+        Args:
+            vehicle_id (str): ID автомобиля
+            
+        Returns:
+            dict: Информация об автомобиле
+        """
+        query = """
+        SELECT * FROM vehicles 
+        WHERE id = %s
+        """
+        
+        try:
+            result = self.execute_query(query, (vehicle_id,))
+            return result[0] if result else None
+        except Exception as e:
+            logger.error(f"Error getting vehicle by id: {str(e)}")
+            return None
+    
+    def get_telemetry_data(self, vehicle_id, start_date, end_date):
+        """
+        Получает телеметрические данные автомобиля за указанный период.
+        
+        Args:
+            vehicle_id (str): ID автомобиля
+            start_date (str): Начальная дата в формате YYYY-MM-DD
+            end_date (str): Конечная дата в формате YYYY-MM-DD
+            
+        Returns:
+            list: Список телеметрических данных
+        """
+        query = """
+        SELECT td.* 
+        FROM telemetry_data td
+        JOIN user_vehicles uv ON td.vehicle_id = uv.id
+        WHERE uv.vehicle_id = %s
+        AND td.created_at BETWEEN %s AND %s
+        ORDER BY td.created_at DESC
+        """
+        
+        try:
+            return self.execute_query(query, (vehicle_id, start_date, end_date))
+        except Exception as e:
+            logger.error(f"Error getting telemetry data: {str(e)}")
+            return []
+    
+    def get_vehicle_works(self, vehicle_id):
+        """
+        Получает историю работ для автомобиля.
+        
+        Args:
+            vehicle_id (str): ID автомобиля
+            
+        Returns:
+            list: Список работ
+        """
+        query = """
+        SELECT w.* 
+        FROM works w
+        WHERE w.vehicle_id = %s
+        ORDER BY w.created_at DESC
+        """
+        
+        try:
+            return self.execute_query(query, (vehicle_id,))
+        except Exception as e:
+            logger.error(f"Error getting vehicle works: {str(e)}")
+            return []
+    
+    def save_analysis_result(self, analysis_result):
+        """
+        Сохраняет результаты анализа в базу данных.
+        
+        Args:
+            analysis_result (dict): Результаты анализа
+            
+        Returns:
+            bool: True если успешно, иначе False
+        """
+        query = """
+        INSERT INTO vehicle_analysis (
+            vehicle_id, 
+            engine_health, 
+            oil_health, 
+            tires_health, 
+            brakes_health, 
+            suspension_health, 
+            battery_health, 
+            overall_health,
+            recommendations
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        RETURNING id
+        """
+        
+        params = (
+            analysis_result['vehicle_id'],
+            analysis_result['engine_health'],
+            analysis_result['oil_health'],
+            analysis_result['tires_health'],
+            analysis_result['brakes_health'],
+            analysis_result['suspension_health'],
+            analysis_result['battery_health'],
+            analysis_result['overall_health'],
+            ','.join(analysis_result['recommendations'])
+        )
+        
+        try:
+            result = self.execute_query(query, params)
+            logger.info(f"Analysis saved with ID: {result[0]['id'] if result else 'unknown'}")
+            return True
+        except Exception as e:
+            logger.error(f"Error saving analysis result: {str(e)}")
+            return False
+    
+    def create_analysis_table_if_not_exists(self):
+        """
+        Создает таблицу для хранения результатов анализа, если она не существует.
+        
+        Returns:
+            bool: True если успешно, иначе False
+        """
+        query = """
+        CREATE TABLE IF NOT EXISTS vehicle_analysis (
+            id SERIAL PRIMARY KEY,
+            vehicle_id UUID NOT NULL REFERENCES vehicles(id),
+            engine_health INTEGER CHECK (engine_health BETWEEN 0 AND 100),
+            oil_health INTEGER CHECK (oil_health BETWEEN 0 AND 100),
+            tires_health INTEGER CHECK (tires_health BETWEEN 0 AND 100),
+            brakes_health INTEGER CHECK (brakes_health BETWEEN 0 AND 100),
+            suspension_health INTEGER CHECK (suspension_health BETWEEN 0 AND 100),
+            battery_health INTEGER CHECK (battery_health BETWEEN 0 AND 100),
+            overall_health INTEGER CHECK (overall_health BETWEEN 0 AND 100),
+            recommendations TEXT,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX IF NOT EXISTS vehicle_analysis_vehicle_id_idx ON vehicle_analysis(vehicle_id);
+        CREATE INDEX IF NOT EXISTS vehicle_analysis_created_at_idx ON vehicle_analysis(created_at);
+        """
+        
+        try:
+            self.execute_query(query, fetch=False)
+            logger.info("Analysis table created or already exists")
+            return True
+        except Exception as e:
+            logger.error(f"Error creating analysis table: {str(e)}")
+            return False 

@@ -1,0 +1,216 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import json
+import logging
+import sqlite3
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Set up logging
+logger = logging.getLogger("Database")
+
+class Database:
+    """
+    Класс для имитации работы с базой данных PostgreSQL.
+    Использует SQLite для локального тестирования.
+    """
+    
+    def __init__(self):
+        """
+        Инициализирует соединение с базой данных SQLite.
+        """
+        try:
+            # Ensure the directory exists for the database file
+            db_dir = os.path.dirname(os.path.abspath(__file__))
+            self.db_path = os.path.join(db_dir, 'mock_database.db')
+            
+            # Create connection with proper error handling
+            self.conn = sqlite3.connect(self.db_path)
+            self.conn.row_factory = sqlite3.Row  # This allows accessing columns by name
+            
+            # Create tables
+            self.create_tables()
+            logger.info(f"Successfully connected to the mock database at {self.db_path}")
+        
+        except sqlite3.Error as e:
+            logger.error(f"Connection error: {str(e)}")
+            raise e
+        except Exception as e:
+            logger.error(f"Database initialization error: {str(e)}")
+            raise e
+    
+    def create_tables(self):
+        """
+        Создает необходимые таблицы в SQLite.
+        """
+        cursor = self.conn.cursor()
+        
+        # Таблица для транспортных средств
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS vehicles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            vin TEXT UNIQUE NOT NULL,
+            make TEXT NOT NULL,
+            model TEXT NOT NULL,
+            plate_number TEXT,
+            owner_phone TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+        
+        # Таблица для телеметрических данных
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS telemetry_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            vehicle_id INTEGER,
+            rpm INTEGER,
+            speed INTEGER,
+            engine_temp REAL,
+            dtc_codes TEXT,
+            o2_voltage REAL,
+            fuel_pressure REAL,
+            intake_temp REAL,
+            maf_sensor REAL,
+            throttle_pos REAL,
+            engine_health INTEGER,
+            oil_health INTEGER,
+            tires_health INTEGER,
+            brakes_health INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (vehicle_id) REFERENCES vehicles (id)
+        )
+        ''')
+        
+        # Таблица для работ по ТО
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS works (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            vehicle_id INTEGER,
+            technician_id INTEGER,
+            work_type TEXT NOT NULL,
+            description TEXT,
+            parts_used TEXT,
+            cost REAL,
+            status TEXT CHECK(status IN ('completed', 'in_progress', 'scheduled')) DEFAULT 'completed',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP,
+            FOREIGN KEY (vehicle_id) REFERENCES vehicles (id)
+        )
+        ''')
+        
+        # Таблица для результатов анализа
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS vehicle_analysis (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            vehicle_id INTEGER,
+            engine_health INTEGER CHECK (engine_health BETWEEN 0 AND 100),
+            oil_health INTEGER CHECK (oil_health BETWEEN 0 AND 100),
+            tires_health INTEGER CHECK (tires_health BETWEEN 0 AND 100),
+            brakes_health INTEGER CHECK (brakes_health BETWEEN 0 AND 100),
+            suspension_health INTEGER CHECK (suspension_health BETWEEN 0 AND 100),
+            battery_health INTEGER CHECK (battery_health BETWEEN 0 AND 100),
+            overall_health INTEGER CHECK (overall_health BETWEEN 0 AND 100),
+            recommendations TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (vehicle_id) REFERENCES vehicles (id)
+        )
+        ''')
+        
+        self.conn.commit()
+        logger.info("Tables created or already exist in mock database")
+    
+    def execute_query(self, query, params=None, fetch=True):
+        """
+        Выполняет SQL-запрос к базе данных.
+        
+        Args:
+            query (str): SQL-запрос
+            params (tuple, optional): Параметры для SQL-запроса
+            fetch (bool, optional): Нужно ли возвращать результаты запроса
+            
+        Returns:
+            list: Результат запроса в виде списка словарей
+        """
+        cursor = self.conn.cursor()
+        
+        try:
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            
+            if fetch:
+                columns = [col[0] for col in cursor.description]
+                results = cursor.fetchall()
+                return [dict(zip(columns, row)) for row in results]
+            else:
+                self.conn.commit()
+                return True
+                
+        except Exception as e:
+            logger.error(f"Query execution error: {str(e)}")
+            self.conn.rollback()
+            raise e
+    
+    # Остальные методы для работы с данными
+    def get_all_vehicles(self):
+        return self.execute_query("SELECT * FROM vehicles")
+    
+    def get_vehicle_by_id(self, vehicle_id):
+        result = self.execute_query("SELECT * FROM vehicles WHERE id = ?", (vehicle_id,))
+        return result[0] if result else None
+    
+    def get_telemetry_data(self, vehicle_id, start_date, end_date):
+        return self.execute_query(
+            "SELECT * FROM telemetry_data WHERE vehicle_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at DESC",
+            (vehicle_id, start_date, end_date)
+        )
+    
+    def get_vehicle_works(self, vehicle_id):
+        return self.execute_query(
+            "SELECT * FROM works WHERE vehicle_id = ? ORDER BY created_at DESC",
+            (vehicle_id,)
+        )
+    
+    def save_analysis_result(self, analysis_result):
+        query = """
+        INSERT INTO vehicle_analysis (
+            vehicle_id, 
+            engine_health, 
+            oil_health, 
+            tires_health, 
+            brakes_health, 
+            suspension_health, 
+            battery_health, 
+            overall_health,
+            recommendations
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        
+        params = (
+            analysis_result['vehicle_id'],
+            analysis_result['engine_health'],
+            analysis_result['oil_health'],
+            analysis_result['tires_health'],
+            analysis_result['brakes_health'],
+            analysis_result['suspension_health'],
+            analysis_result['battery_health'],
+            analysis_result['overall_health'],
+            ','.join(analysis_result['recommendations'])
+        )
+        
+        try:
+            self.execute_query(query, params, fetch=False)
+            logger.info(f"Analysis saved for vehicle {analysis_result['vehicle_id']}")
+            return True
+        except Exception as e:
+            logger.error(f"Error saving analysis result: {str(e)}")
+            return False
+    
+    def create_analysis_table_if_not_exists(self):
+        # Таблица уже создается в методе create_tables()
+        return True 

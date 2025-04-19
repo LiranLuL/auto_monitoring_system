@@ -4,6 +4,11 @@ import { vehicleService } from '../services/vehicleService';
 import { Work, CreateWorkData, VehicleSearchParams } from '../types/work';
 import { Vehicle } from '../types/models';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { Box, Button, Container, TextField, Typography, Paper, Grid, Select, MenuItem, FormControl, InputLabel, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, IconButton, InputAdornment } from '@mui/material';
+import workTypesData from '../data/workTypes.json';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const WorkManagement: React.FC = () => {
   const { user } = useAuth();
@@ -50,6 +55,47 @@ const WorkManagement: React.FC = () => {
     cost: 0,
     status: 'completed'
   });
+
+  // State для типов работ
+  const [workTypes, setWorkTypes] = useState(workTypesData);
+  const [workTypeSearch, setWorkTypeSearch] = useState('');
+  
+  // Группировка типов работ по категории для отображения
+  const [workTypesByCategory, setWorkTypesByCategory] = useState<Record<string, typeof workTypesData>>({});
+  
+  useEffect(() => {
+    // Фильтруем типы работ на основе поискового запроса
+    const filteredTypes = workTypeSearch
+      ? workTypesData.filter(type => 
+          type.name.toLowerCase().includes(workTypeSearch.toLowerCase()) ||
+          (type.category && type.category.toLowerCase().includes(workTypeSearch.toLowerCase())) ||
+          (type.description && type.description.toLowerCase().includes(workTypeSearch.toLowerCase()))
+        )
+      : workTypesData;
+    
+    // Группируем типы работ по категории
+    const grouped: Record<string, typeof workTypesData> = {};
+    const uncategorized: typeof workTypesData = [];
+    
+    // Проходим по всем типам работ
+    filteredTypes.forEach(type => {
+      if (type.category) {
+        if (!grouped[type.category]) {
+          grouped[type.category] = [];
+        }
+        grouped[type.category].push(type);
+      } else {
+        uncategorized.push(type);
+      }
+    });
+    
+    // Добавляем некатегоризированные элементы в конец
+    if (uncategorized.length > 0) {
+      grouped['Общие работы'] = uncategorized;
+    }
+    
+    setWorkTypesByCategory(grouped);
+  }, [workTypes, workTypeSearch]);
 
   // Загрузка списка автомобилей при монтировании компонента
   useEffect(() => {
@@ -385,45 +431,7 @@ const WorkManagement: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Управление работами</h1>
 
-      {/* Vehicle Search */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Поиск и фильтрация автомобилей</h2>
-          <button
-            onClick={clearFilters}
-            className="text-gray-600 text-sm hover:text-indigo-600"
-          >
-            Очистить фильтры
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">VIN</label>
-            <input
-              type="text"
-              value={searchParams.vin || ''}
-              onChange={(e) => setSearchParams({ ...searchParams, vin: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Телефон владельца</label>
-            <input
-              type="text"
-              value={searchParams.ownerPhone || ''}
-              onChange={(e) => setSearchParams({ ...searchParams, ownerPhone: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
-        <button
-          onClick={handleSearch}
-          disabled={loading}
-          className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {loading ? 'Поиск...' : 'Применить фильтр'}
-        </button>
-      </div>
+        
 
       {/* Vehicle List */}
       <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
@@ -625,59 +633,93 @@ const WorkManagement: React.FC = () => {
 
       {/* New Work Form */}
       {selectedVehicle && (
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold mb-4">Добавить новую работу</h2>
-          <form onSubmit={handleCreateWork} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Тип работы</label>
-              <input
-                type="text"
-                value={newWork.workType}
-                onChange={(e) => setNewWork({ ...newWork, workType: e.target.value })}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Описание</label>
-              <textarea
-                value={newWork.description}
-                onChange={(e) => setNewWork({ ...newWork, description: e.target.value })}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                rows={3}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Использованные запчасти</label>
-              <textarea
-                value={newWork.partsUsed}
-                onChange={(e) => setNewWork({ ...newWork, partsUsed: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                rows={2}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Стоимость</label>
-              <input
-                type="number"
-                value={newWork.cost}
-                onChange={(e) => setNewWork({ ...newWork, cost: parseFloat(e.target.value) })}
-                required
-                min="0"
-                step="0.01"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            <button
+        <Box className="bg-white p-6 rounded-lg shadow-md mb-6" sx={{ mt: 4 }}>
+          <h2 className='text-xl font-semibold mb-4'>
+            Добавить новую работу
+          </h2>
+          <Box component="form" onSubmit={handleCreateWork} sx={{ mt: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                
+                
+                <FormControl fullWidth required>
+                  <InputLabel id="work-type-label">Тип работы</InputLabel>
+                  <Select
+                    labelId="work-type-label"
+                    value={newWork.workType}
+                    onChange={(e) => setNewWork({ ...newWork, workType: e.target.value })}
+                    label="Тип работы"
+                    required
+                  >
+                    {Object.keys(workTypesByCategory).length === 0 ? (
+                      <MenuItem disabled>Нет подходящих типов работ</MenuItem>
+                    ) : (
+                      Object.entries(workTypesByCategory).map(([category, types]) => [
+                        <MenuItem key={`category-${category}`} disabled divider sx={{ opacity: 0.7, fontWeight: 'bold' }}>
+                          {category} ({types.length})
+                        </MenuItem>,
+                        ...types.map(type => (
+                          <MenuItem 
+                            key={type.id} 
+                            value={type.name}
+                            title={type.description ? type.description : undefined}
+                            sx={{ pl: 4 }}
+                          >
+                            {type.name}
+                            {type.description && (
+                              <Typography variant="caption" color="textSecondary" sx={{ ml: 1, display: 'block', fontSize: '0.75rem' }} noWrap>
+                                {type.description.substring(0, 40)}{type.description.length > 40 ? '...' : ''}
+                              </Typography>
+                            )}
+                          </MenuItem>
+                        ))
+                      ]).flat()
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={10} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="description"
+                  label="Описание"
+                  value={newWork.description}
+                  onChange={(e) => setNewWork({ ...newWork, description: e.target.value })}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="partsUsed"
+                  label="Использованные запчасти"
+                  value={newWork.partsUsed}
+                  onChange={(e) => setNewWork({ ...newWork, partsUsed: e.target.value })}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="cost"
+                  label="Стоимость"
+                  value={newWork.cost}
+                  onChange={(e) => setNewWork({ ...newWork, cost: parseFloat(e.target.value) })}
+                />
+              </Grid>
+            </Grid>
+            
+            <Button
               type="submit"
+              variant="contained"
               disabled={loading}
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
+              sx={{ mt: 3 }}
             >
-              {loading ? 'Добавление...' : 'Добавить работу'}
-            </button>
-          </form>
-        </div>
+              {loading ? 'Сохранение...' : 'Добавить работу'}
+            </Button>
+          </Box>
+        </Box>
       )}
 
       {/* Works List */}

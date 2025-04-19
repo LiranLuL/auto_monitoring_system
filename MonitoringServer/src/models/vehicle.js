@@ -118,6 +118,75 @@ class Vehicle {
     
     return result.rows[0];
   }
+
+  static async delete(id) {
+    try {
+      // Проверяем, существует ли автомобиль
+      const checkResult = await db.query('SELECT id FROM vehicles WHERE id = $1', [id]);
+      if (checkResult.rows.length === 0) {
+        return null;
+      }
+
+      // Удаляем все связанные данные о здоровье автомобиля
+      await db.query('DELETE FROM vehicle_health WHERE vehicle_id = $1', [id]);
+      
+      // Удаляем сам автомобиль
+      const result = await db.query('DELETE FROM vehicles WHERE id = $1 RETURNING id', [id]);
+      
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error deleting vehicle:', error);
+      throw error;
+    }
+  }
+
+  static async searchByOwner(phone) {
+    try {
+      const result = await db.query(
+        'SELECT * FROM vehicles WHERE owner_phone ILIKE $1 ORDER BY created_at DESC',
+        [`%${phone}%`]
+      );
+      
+      return result.rows;
+    } catch (error) {
+      console.error('Error searching vehicle by owner:', error);
+      throw error;
+    }
+  }
+
+  static async searchByVin(vin) {
+    try {
+      const result = await db.query(
+        'SELECT * FROM vehicles WHERE vin ILIKE $1',
+        [`%${vin}%`]
+      );
+      
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error searching vehicle by VIN:', error);
+      throw error;
+    }
+  }
+
+  static async checkUserVehicleAccess(userId, vehicleId, role) {
+    // Администраторы и техники имеют доступ ко всем автомобилям
+    if (role === 'admin' || role === 'technician') {
+      return true;
+    }
+    
+    // Для обычных пользователей проверяем наличие связи с автомобилем
+    try {
+      const result = await db.query(
+        'SELECT 1 FROM user_vehicles WHERE user_id = $1 AND vehicle_id = $2',
+        [userId, vehicleId]
+      );
+      
+      return result.rows.length > 0;
+    } catch (error) {
+      console.error('Error checking vehicle access:', error);
+      return false;
+    }
+  }
 }
 
 module.exports = Vehicle;

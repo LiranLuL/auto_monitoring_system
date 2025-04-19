@@ -85,6 +85,75 @@ class VehicleController {
       res.status(500).json({ error: 'Failed to update vehicle' });
     }
   }
+
+  static async getVehicleById(req, res) {
+    try {
+      const { vehicleId } = req.params;
+      const vehicle = await Vehicle.findById(vehicleId);
+      
+      if (!vehicle) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      
+      res.json(vehicle);
+    } catch (error) {
+      console.error('Error getting vehicle by ID:', error);
+      res.status(500).json({ error: 'Failed to get vehicle', details: error.message });
+    }
+  }
+
+  static async deleteVehicle(req, res) {
+    try {
+      const { vehicleId } = req.params;
+      const result = await Vehicle.delete(vehicleId);
+      
+      if (!result) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      
+      res.json({ message: 'Vehicle deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting vehicle:', error);
+      res.status(500).json({ error: 'Failed to delete vehicle', details: error.message });
+    }
+  }
+
+  static async searchVehicleByOwner(req, res) {
+    try {
+      const { phone } = req.query;
+      
+      if (!phone) {
+        return res.status(400).json({ error: 'Owner phone number is required' });
+      }
+      
+      const vehicles = await Vehicle.searchByOwner(phone);
+      res.json(vehicles);
+    } catch (error) {
+      console.error('Error searching vehicle by owner:', error);
+      res.status(500).json({ error: 'Failed to search vehicle by owner', details: error.message });
+    }
+  }
+
+  static async searchVehicleByVin(req, res) {
+    try {
+      const { vin } = req.query;
+      
+      if (!vin) {
+        return res.status(400).json({ error: 'VIN is required' });
+      }
+      
+      const vehicle = await Vehicle.searchByVin(vin);
+      
+      if (!vehicle) {
+        return res.status(404).json({ error: 'Vehicle not found' });
+      }
+      
+      res.json(vehicle);
+    } catch (error) {
+      console.error('Error searching vehicle by VIN:', error);
+      res.status(500).json({ error: 'Failed to search vehicle by VIN', details: error.message });
+    }
+  }
 }
 
 module.exports = {
@@ -92,5 +161,9 @@ module.exports = {
   createVehicle: VehicleController.createVehicle,
   getAllVehicles: VehicleController.getAllVehicles,
   saveHealthData: VehicleController.saveHealthData,
-  updateVehicle: VehicleController.updateVehicle
+  updateVehicle: VehicleController.updateVehicle,
+  getVehicleById: VehicleController.getVehicleById,
+  deleteVehicle: VehicleController.deleteVehicle,
+  searchVehicleByOwner: VehicleController.searchVehicleByOwner,
+  searchVehicleByVin: VehicleController.searchVehicleByVin
 }; 
