@@ -1,0 +1,366 @@
+2025-04-19 22:33:46,748 - Database - INFO - Database tables created successfully
+2025-04-19 22:33:46,748 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:33:46,748 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:33:46,778 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:33:47,497 - Database - INFO - Database tables created successfully
+2025-04-19 22:33:47,498 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:33:47,507 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:33:47,525 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:33:47,529 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:33:52,509 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:33:52,509 - werkzeug - INFO -  * Running on http://192.168.0.121:5000/ (Press CTRL+C to quit)
+2025-04-19 22:36:20,842 - Database - INFO - Database tables created successfully
+2025-04-19 22:36:20,842 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:36:20,843 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:36:20,868 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:36:21,439 - Database - INFO - Database tables created successfully
+2025-04-19 22:36:21,439 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:36:21,440 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:36:21,456 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:36:21,460 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:36:26,444 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:36:26,445 - werkzeug - INFO -  * Running on http://192.168.0.121:5000/ (Press CTRL+C to quit)
+2025-04-19 22:37:44,545 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\run_api_server.py', reloading
+2025-04-19 22:37:44,583 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:37:45,396 - Database - INFO - Database tables created successfully
+2025-04-19 22:37:45,396 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:37:45,397 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:37:45,414 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:37:45,419 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:37:50,389 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:37:50,390 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:38:13,079 - Database - INFO - Database tables created successfully
+2025-04-19 22:38:13,079 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:38:13,079 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:38:13,107 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:38:13,668 - Database - INFO - Database tables created successfully
+2025-04-19 22:38:13,669 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:38:13,669 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:38:13,685 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:38:13,689 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:38:18,668 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:38:18,669 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:38:28,801 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:38:28,802 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:38:28,803 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:38:28] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:38:31,675 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:38:31,676 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:38:31,677 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:38:31] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:39:49,111 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\check_vehicles.py', reloading
+2025-04-19 22:39:49,147 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:39:49,769 - Database - INFO - Database tables created successfully
+2025-04-19 22:39:49,769 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:39:49,769 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:39:49,787 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:39:49,792 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:39:54,767 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:39:54,767 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:40:27,730 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\add_test_analysis.py', reloading
+2025-04-19 22:40:27,781 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:40:28,397 - Database - INFO - Database tables created successfully
+2025-04-19 22:40:28,397 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:40:28,397 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:40:28,415 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:40:28,419 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:40:33,388 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:40:33,389 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:40:58,131 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api.py', reloading
+2025-04-19 22:40:58,175 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:40:58,823 - Database - INFO - Database tables created successfully
+2025-04-19 22:40:58,823 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:40:58,824 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:40:58,840 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:40:58,845 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:40:59,912 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api.py', reloading
+2025-04-19 22:40:59,949 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:41:00,594 - Database - INFO - Database tables created successfully
+2025-04-19 22:41:00,595 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:41:00,595 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:41:00,612 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:41:00,615 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:41:05,187 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:41:05,187 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:41:08,180 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:41:08] "GET /api/health HTTP/1.1" 200 -
+2025-04-19 22:41:08,185 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:41:08,186 - APIServer - ERROR - Error getting latest analysis for vehicle 1: type object 'datetime.datetime' has no attribute 'fromisoformat'
+2025-04-19 22:41:08,187 - APIServer - ERROR - Traceback (most recent call last):
+  File "D:\auto_monitoring_system\MonitoringServer\src\run_api_server.py", line 150, in get_latest_analysis
+    if not latest_analysis or (datetime.now() - datetime.fromisoformat(latest_analysis[0]['created_at'])) > timedelta(hours=24):
+AttributeError: type object 'datetime.datetime' has no attribute 'fromisoformat'
+
+2025-04-19 22:41:08,188 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:41:08] "[35m[1mGET /api/analysis/latest/1 HTTP/1.1[0m" 500 -
+2025-04-19 22:41:08,193 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:41:08,194 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:08,195 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:41:08] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:08,200 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:41:08,202 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:41:08] "GET /api/analysis/history/1 HTTP/1.1" 200 -
+2025-04-19 22:41:19,545 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:19,547 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:19,548 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:19] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:20,676 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:20,678 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:20,678 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:20] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:22,036 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:22,037 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:22,038 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:22] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:22,622 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:22,623 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:22,624 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:22] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:23,082 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:23,083 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:23,084 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:23] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:29,147 - Database - INFO - Database tables created successfully
+2025-04-19 22:41:29,147 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:41:29,147 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:41:29,175 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:41:29,786 - Database - INFO - Database tables created successfully
+2025-04-19 22:41:29,787 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:41:29,787 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:41:29,804 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:41:29,808 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:41:34,785 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:41:34,786 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:41:35,012 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:35,013 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:35,014 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:35] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:35,216 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:35,217 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:35,218 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:35] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:35,368 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:35,368 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:35,369 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:35] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:35,626 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:35,628 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:35,628 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:35] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:36,038 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:36,039 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:36,040 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:36] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:41:36,112 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:41:36,112 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:41:36,113 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:41:36] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:42:17,077 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api.py', reloading
+2025-04-19 22:42:17,114 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:42:17,727 - Database - INFO - Database tables created successfully
+2025-04-19 22:42:17,727 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:42:17,727 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:42:17,745 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:42:17,751 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:42:22,728 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:42:22,729 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:42:45,974 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:42:45,974 - APIServer - WARNING - Vehicle with ID DYRJFUDBVXGDIRTHF not found
+2025-04-19 22:42:45,976 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:42:45] "[33mGET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1[0m" 404 -
+2025-04-19 22:43:00,666 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:00] "GET /api/health HTTP/1.1" 200 -
+2025-04-19 22:43:00,672 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:43:00,673 - APIServer - ERROR - Error getting latest analysis for vehicle 1: type object 'datetime.datetime' has no attribute 'fromisoformat'
+2025-04-19 22:43:00,674 - APIServer - ERROR - Traceback (most recent call last):
+  File "D:\auto_monitoring_system\MonitoringServer\src\run_api_server.py", line 150, in get_latest_analysis
+    if not latest_analysis or (datetime.now() - datetime.fromisoformat(latest_analysis[0]['created_at'])) > timedelta(hours=24):
+AttributeError: type object 'datetime.datetime' has no attribute 'fromisoformat'
+
+2025-04-19 22:43:00,674 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:00] "[35m[1mGET /api/analysis/latest/1 HTTP/1.1[0m" 500 -
+2025-04-19 22:43:00,680 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:43:00,681 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:43:00,682 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:00] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:43:00,687 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:43:00,688 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:00] "GET /api/analysis/history/1 HTTP/1.1" 200 -
+2025-04-19 22:43:09,048 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api.py', reloading
+2025-04-19 22:43:09,087 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:43:09,766 - Database - INFO - Database tables created successfully
+2025-04-19 22:43:09,766 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:43:09,767 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:43:09,784 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:43:09,788 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:43:10,853 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api.py', reloading
+2025-04-19 22:43:10,892 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:43:11,523 - Database - INFO - Database tables created successfully
+2025-04-19 22:43:11,524 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:43:11,524 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:43:11,541 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:43:11,546 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:43:12,624 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api.py', reloading
+2025-04-19 22:43:12,660 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:43:13,278 - Database - INFO - Database tables created successfully
+2025-04-19 22:43:13,279 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:43:13,279 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:43:13,297 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:43:13,301 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:43:17,860 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:43:17,860 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:43:22,732 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:22] "GET /api/health HTTP/1.1" 200 -
+2025-04-19 22:43:22,737 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:43:22,738 - APIServer - ERROR - Error getting latest analysis for vehicle 1: type object 'datetime.datetime' has no attribute 'fromisoformat'
+2025-04-19 22:43:22,739 - APIServer - ERROR - Traceback (most recent call last):
+  File "D:\auto_monitoring_system\MonitoringServer\src\run_api_server.py", line 150, in get_latest_analysis
+    if not latest_analysis or (datetime.now() - datetime.fromisoformat(latest_analysis[0]['created_at'])) > timedelta(hours=24):
+AttributeError: type object 'datetime.datetime' has no attribute 'fromisoformat'
+
+2025-04-19 22:43:22,740 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:22] "[35m[1mGET /api/analysis/latest/1 HTTP/1.1[0m" 500 -
+2025-04-19 22:43:22,745 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:43:22,746 - APIServer - WARNING - Vehicle with ID RRRRRRRRRRRRRRRRR not found
+2025-04-19 22:43:22,746 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:22] "[33mGET /api/analysis/latest/RRRRRRRRRRRRRRRRR HTTP/1.1[0m" 404 -
+2025-04-19 22:43:22,752 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:43:22,755 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2025 22:43:22] "GET /api/analysis/history/1 HTTP/1.1" 200 -
+2025-04-19 22:43:39,632 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:43:39,633 - APIServer - WARNING - Vehicle with ID DYRJFUDBVXGDIRTHF not found
+2025-04-19 22:43:39,634 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:43:39] "[33mGET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1[0m" 404 -
+2025-04-19 22:43:39,993 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\run_api_server.py', reloading
+2025-04-19 22:43:40,027 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:43:40,667 - Database - INFO - Database tables created successfully
+2025-04-19 22:43:40,668 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:43:40,668 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:43:40,684 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:43:40,688 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:43:45,666 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:43:45,667 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:44:49,079 - Database - INFO - Database tables created successfully
+2025-04-19 22:44:49,080 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:44:49,080 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:44:49,106 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:44:49,778 - Database - INFO - Database tables created successfully
+2025-04-19 22:44:49,778 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:44:49,778 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:44:49,793 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:44:49,798 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:44:54,785 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:44:54,786 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:45:00,119 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:45:00,120 - APIServer - WARNING - Vehicle with ID DYRJFUDBVXGDIRTHF not found
+2025-04-19 22:45:00,121 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:45:00] "[33mGET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1[0m" 404 -
+2025-04-19 22:45:04,010 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:45:04,011 - APIServer - WARNING - Vehicle with ID DYRJFUDBVXGDIRTHF not found
+2025-04-19 22:45:04,011 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:45:04] "[33mGET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1[0m" 404 -
+2025-04-19 22:48:56,292 - Database - INFO - Database tables created successfully
+2025-04-19 22:48:56,293 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:48:56,293 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:48:56,319 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:48:56,933 - Database - INFO - Database tables created successfully
+2025-04-19 22:48:56,934 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:48:56,934 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:48:56,948 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:48:56,953 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:49:01,930 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:49:01,930 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:49:10,617 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:49:10,618 - APIServer - WARNING - Vehicle with ID DYRJFUDBVXGDIRTHF not found
+2025-04-19 22:49:10,619 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:49:10] "[33mGET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1[0m" 404 -
+2025-04-19 22:50:37,525 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\database.py', reloading
+2025-04-19 22:50:37,570 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:50:38,217 - Database - INFO - Database tables created successfully
+2025-04-19 22:50:38,218 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:50:38,218 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:50:38,233 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:50:38,239 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:50:43,209 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:50:43,210 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:50:56,735 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\run_api_server.py', reloading
+2025-04-19 22:50:56,776 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:50:57,439 - Database - INFO - Database tables created successfully
+2025-04-19 22:50:57,439 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:50:57,439 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:50:57,455 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:50:57,459 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:51:02,447 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:51:02,448 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:51:18,029 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\add_test_vehicle.py', reloading
+2025-04-19 22:51:18,068 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:51:18,713 - Database - INFO - Database tables created successfully
+2025-04-19 22:51:18,714 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:51:18,714 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:51:18,729 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:51:18,733 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:51:23,696 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:51:23,697 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:51:47,516 - werkzeug - INFO -  * Detected change in 'D:\\auto_monitoring_system\\MonitoringServer\\src\\modules\\predictive_analysis\\test_api_vin.py', reloading
+2025-04-19 22:51:47,558 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:51:48,180 - Database - INFO - Database tables created successfully
+2025-04-19 22:51:48,181 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:51:48,181 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:51:48,195 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:51:48,201 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:51:53,174 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:51:53,174 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:52:14,039 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:14,045 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:14] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:14,811 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:14,813 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:14] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:15,321 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:15,322 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:15] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:15,524 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:15,526 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:15] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:15,728 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:15,730 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:15] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:15,818 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:15,820 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:15] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:16,140 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:16,142 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:16] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:16,321 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:16,323 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:16] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:20,070 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:20,072 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:20] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:52:21,465 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:52:21,466 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:52:21] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:53:16,975 - Database - INFO - Database tables created successfully
+2025-04-19 22:53:16,975 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:53:16,975 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:53:17,002 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:53:17,659 - Database - INFO - Database tables created successfully
+2025-04-19 22:53:17,659 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:53:17,659 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:53:17,674 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:53:17,679 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:53:22,674 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:53:22,674 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:53:40,481 - Database - INFO - Database tables created successfully
+2025-04-19 22:53:40,481 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:53:40,482 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:53:40,510 - werkzeug - INFO -  * Restarting with stat
+2025-04-19 22:53:41,211 - Database - INFO - Database tables created successfully
+2025-04-19 22:53:41,211 - Database - INFO - Successfully initialized database at D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis\vehicle_monitoring.db
+2025-04-19 22:53:41,212 - PredictiveAnalyzer - INFO - Predictive analyzer initialized
+2025-04-19 22:53:41,227 - werkzeug - WARNING -  * Debugger is active!
+2025-04-19 22:53:41,232 - werkzeug - INFO -  * Debugger PIN: 170-367-061
+2025-04-19 22:53:46,197 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-04-19 22:53:46,198 - werkzeug - INFO -  * Running on http://192.168.0.121:5001/ (Press CTRL+C to quit)
+2025-04-19 22:53:51,633 - werkzeug - INFO - 192.168.0.121 - - [19/Apr/2025 22:53:51] "GET /api/health HTTP/1.1" 200 -
+2025-04-19 22:53:51,637 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:53:51,639 - werkzeug - INFO - 192.168.0.121 - - [19/Apr/2025 22:53:51] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:53:51,644 - APIServer - INFO - Mobile request authenticated with token: test_token...
+2025-04-19 22:53:51,646 - werkzeug - INFO - 192.168.0.121 - - [19/Apr/2025 22:53:51] "GET /api/analysis/history/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:03,760 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:03,762 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:03] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:04,580 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:04,581 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:04] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:04,669 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:04,671 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:04] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:24,380 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:24,383 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:24] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:24,553 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:24,554 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:24] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:24,659 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:24,660 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:24] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:26,405 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:26,407 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:26] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:54:59,368 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:54:59,370 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:54:59] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -
+2025-04-19 22:55:00,572 - APIServer - INFO - Mobile request authenticated with token: Bearer eyJ...
+2025-04-19 22:55:00,574 - werkzeug - INFO - 192.168.0.172 - - [19/Apr/2025 22:55:00] "GET /api/analysis/latest/DYRJFUDBVXGDIRTHF HTTP/1.1" 200 -

@@ -22,6 +22,8 @@ import com.example.odometerapp.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.Color
 
 class LoginActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -36,97 +38,102 @@ class LoginActivity : AppCompatActivity() {
             var error by remember { mutableStateOf("") }
             var isLoading by remember { mutableStateOf(false) }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
             ) {
-                Text("Вход", style = MaterialTheme.typography.headlineLarge)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Вход", style = MaterialTheme.typography.headlineLarge)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    TextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Email") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = { Text("Имя пользователя") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Пароль") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                if (error.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(error, color = MaterialTheme.colorScheme.error)
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    TextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = { Text("Имя пользователя") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                Button(
-                    onClick = {
-                        isLoading = true
-                        error = ""
-                        val loginRequest = LoginRequest(email, password, username)
-                        ApiService.authApi.login(loginRequest)
-                            .enqueue(object : Callback<AuthResponse> {
-                                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                                    isLoading = false
-                                    if (response.isSuccessful) {
-                                        val token = response.body()?.token
-                                        if (token != null) {
-                                            // Сохраняем токен в SharedPreferences
-                                            getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                                                .putString("jwt_token", token)
-                                                .apply()
-                                            // Переходим на главный экран
-                                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                                            finish()
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Пароль") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    if (error.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = MaterialTheme.colorScheme.error)
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            isLoading = true
+                            error = ""
+                            val loginRequest = LoginRequest(email, password, username)
+                            ApiService.authApi.login(loginRequest)
+                                .enqueue(object : Callback<AuthResponse> {
+                                    override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                                        isLoading = false
+                                        if (response.isSuccessful) {
+                                            val token = response.body()?.token
+                                            if (token != null) {
+                                                // Сохраняем токен в SharedPreferences
+                                                getSharedPreferences("prefs", MODE_PRIVATE).edit()
+                                                    .putString("jwt_token", token)
+                                                    .apply()
+                                                // Переходим на главный экран
+                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                                finish()
+                                            } else {
+                                                error = "Получен пустой токен"
+                                            }
                                         } else {
-                                            error = "Получен пустой токен"
+                                            error = "Ошибка входа: ${response.code()}"
                                         }
-                                    } else {
-                                        error = "Ошибка входа: ${response.code()}"
                                     }
-                                }
 
-                                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                                    isLoading = false
-                                    error = "Ошибка сети: ${t.localizedMessage}"
-                                }
-                            })
-                    },
-                    enabled = !isLoading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Войти")
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Button(
-                    onClick = {
-                        startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Регистрация")
+                                    override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                                        isLoading = false
+                                        error = "Ошибка сети: ${t.localizedMessage}"
+                                    }
+                                })
+                        },
+                        enabled = !isLoading,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Войти")
+                    }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Button(
+                        onClick = {
+                            startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Регистрация")
+                    }
                 }
             }
         }

@@ -8,16 +8,16 @@ const VehicleManagement: React.FC = () => {
   // Состояние для списка автомобилей
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
-  
+
   // Состояние для пагинации
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  
+
   // Состояние для фильтрации
   const [filterVin, setFilterVin] = useState('');
   const [filterOwnerPhone, setFilterOwnerPhone] = useState('');
-  
+
   // Состояние для поиска автомобиля
   const [searchVin, setSearchVin] = useState('');
   const [searchOwnerPhone, setSearchOwnerPhone] = useState('');
@@ -59,7 +59,7 @@ const VehicleManagement: React.FC = () => {
   useEffect(() => {
     const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
     setTotalPages(totalPages > 0 ? totalPages : 1);
-    
+
     // Если текущая страница выходит за пределы общего числа страниц
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
@@ -71,7 +71,7 @@ const VehicleManagement: React.FC = () => {
     const makes = cars.map(car => ({ id: car.id, name: car.name }));
     setCarMakes(makes);
   }, []);
-  
+
   // При выборе марки обновляем список моделей
   useEffect(() => {
     if (selectedMake) {
@@ -102,13 +102,13 @@ const VehicleManagement: React.FC = () => {
     let filtered = [...vehicles];
 
     if (filterVin) {
-      filtered = filtered.filter(vehicle => 
+      filtered = filtered.filter(vehicle =>
         vehicle.vin.toLowerCase().includes(filterVin.toLowerCase())
       );
     }
 
     if (filterOwnerPhone) {
-      filtered = filtered.filter(vehicle => 
+      filtered = filtered.filter(vehicle =>
         vehicle.owner_phone.includes(filterOwnerPhone)
       );
     }
@@ -151,7 +151,7 @@ const VehicleManagement: React.FC = () => {
     // Устанавливаем значения фильтров из полей поиска
     setFilterVin(searchVin);
     setFilterOwnerPhone(searchOwnerPhone);
-    
+
     // Очищаем поля поиска
     setSearchVin('');
     setSearchOwnerPhone('');
@@ -161,12 +161,12 @@ const VehicleManagement: React.FC = () => {
   const handleSelectVehicleForEdit = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
     setIsEditing(true);
-    
+
     // Находим марку авто по имени
     const makeObj = cars.find(car => car.name.toLowerCase() === vehicle.make.toLowerCase());
     const makeId = makeObj ? makeObj.id : '';
     setSelectedMake(makeId);
-    
+
     setFormData({
       vin: vehicle.vin,
       make: vehicle.make,
@@ -178,7 +178,7 @@ const VehicleManagement: React.FC = () => {
       healthStatus: vehicle.healthStatus
     });
   };
-  
+
   // При добавлении нового авто
   const handleAddNew = () => {
     setSelectedVehicle(null);
@@ -201,12 +201,12 @@ const VehicleManagement: React.FC = () => {
       }
     });
   };
-  
+
   // При изменении выбранной марки
   const handleMakeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const makeId = e.target.value;
     setSelectedMake(makeId);
-    
+
     // Если выбрана марка, устанавливаем её имя в formData
     if (makeId) {
       const selectedMakeObj = cars.find(car => car.id === makeId);
@@ -217,11 +217,11 @@ const VehicleManagement: React.FC = () => {
       setFormData(prev => ({ ...prev, make: '', model: '' }));
     }
   };
-  
+
   // При изменении выбранной модели
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const modelId = e.target.value;
-    
+
     if (modelId && selectedMake) {
       const selectedMakeObj = cars.find(car => car.id === selectedMake);
       if (selectedMakeObj) {
@@ -237,6 +237,15 @@ const VehicleManagement: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isAdding) {
+      const vin = formData.vin.trim();
+      if (vin.length !== 17) {
+        toast.error('VIN должен состоять ровно из 17 символов.');
+        return;
+      }
+    }
+
+
     try {
       if (isAdding) {
         await vehicleService.createVehicle(formData);
@@ -268,7 +277,7 @@ const VehicleManagement: React.FC = () => {
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
@@ -283,18 +292,16 @@ const VehicleManagement: React.FC = () => {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`relative inline-flex items-center rounded-md border ${
-              currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
-            } px-4 py-2 text-sm font-medium`}
+            className={`relative inline-flex items-center rounded-md border ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
+              } px-4 py-2 text-sm font-medium`}
           >
             Назад
           </button>
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`relative ml-3 inline-flex items-center rounded-md border ${
-              currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
-            } px-4 py-2 text-sm font-medium`}
+            className={`relative ml-3 inline-flex items-center rounded-md border ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
+              } px-4 py-2 text-sm font-medium`}
           >
             Вперед
           </button>
@@ -329,9 +336,8 @@ const VehicleManagement: React.FC = () => {
               <button
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}
-                className={`relative inline-flex items-center rounded-l-md px-2 py-2 ${
-                  currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
-                } focus:z-20`}
+                className={`relative inline-flex items-center rounded-l-md px-2 py-2 ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  } focus:z-20`}
               >
                 <span className="sr-only">В начало</span>
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -341,36 +347,33 @@ const VehicleManagement: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`relative inline-flex items-center px-2 py-2 ${
-                  currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
-                } focus:z-20`}
+                className={`relative inline-flex items-center px-2 py-2 ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  } focus:z-20`}
               >
                 <span className="sr-only">Назад</span>
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" transform="scale(-1, 1) translate(-20, 0)" />
                 </svg>
               </button>
-              
+
               {pageNumbers.map(number => (
                 <button
                   key={number}
                   onClick={() => handlePageChange(number)}
-                  className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
-                    currentPage === number
-                      ? 'bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                      : 'bg-white text-gray-900 hover:bg-gray-50 focus:z-20'
-                  }`}
+                  className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${currentPage === number
+                    ? 'bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                    : 'bg-white text-gray-900 hover:bg-gray-50 focus:z-20'
+                    }`}
                 >
                   {number}
                 </button>
               ))}
-              
+
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`relative inline-flex items-center px-2 py-2 ${
-                  currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
-                } focus:z-20`}
+                className={`relative inline-flex items-center px-2 py-2 ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  } focus:z-20`}
               >
                 <span className="sr-only">Вперед</span>
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -380,9 +383,8 @@ const VehicleManagement: React.FC = () => {
               <button
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage === totalPages}
-                className={`relative inline-flex items-center rounded-r-md px-2 py-2 ${
-                  currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
-                } focus:z-20`}
+                className={`relative inline-flex items-center rounded-r-md px-2 py-2 ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  } focus:z-20`}
               >
                 <span className="sr-only">В конец</span>
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -576,7 +578,7 @@ const VehicleManagement: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{vehicle.plate_number}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{vehicle.owner_phone}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{vehicle.mileage}</td>
-                  
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => handleSelectVehicleForEdit(vehicle)}

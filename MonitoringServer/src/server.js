@@ -1,6 +1,7 @@
 require('dotenv').config({path:'../.env'});
 const express = require('express');
 const cors = require('cors');
+const os = require('os');
 const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
 const telemetryRoutes = require('./routes/telemetry');
@@ -15,6 +16,26 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Функция для получения IP-адресов
+function getNetworkInterfaces() {
+    const interfaces = os.networkInterfaces();
+    const addresses = [];
+    
+    Object.keys(interfaces).forEach((interfaceName) => {
+        interfaces[interfaceName].forEach((interface) => {
+            // Пропускаем IPv6 и неактивные интерфейсы
+            if (interface.family === 'IPv4' && !interface.internal) {
+                addresses.push({
+                    interface: interfaceName,
+                    address: interface.address
+                });
+            }
+        });
+    });
+    
+    return addresses;
+}
 
 // Инициализация таблиц последовательно
 async function initializeTables() {
@@ -52,7 +73,14 @@ app.get('/', (req, res) => {
 // Запуск сервера
 initializeTables().then(() => {
   app.listen(PORT, () => {
+    console.log('\n=== Server Information ===');
     console.log(`Server is running on port ${PORT}`);
+    console.log('\nAvailable network interfaces:');
+    const networkInterfaces = getNetworkInterfaces();
+    networkInterfaces.forEach((iface) => {
+      console.log(`- ${iface.interface}: http://${iface.address}:${PORT}`);
+    });
+    console.log('\n=========================\n');
   });
 }).catch(error => {
   console.error('Failed to start server:', error);

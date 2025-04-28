@@ -1,11 +1,52 @@
 [
   {
     "id": 1,
-    "vin": "SAMPLEVIN12345",
-    "make": "Test",
-    "model": "Simulator",
-    "plate_number": "TEST123",
-    "owner_phone": "+1234567890",
-    "created_at": "2025-04-15T23:29:58.612038"
+    "vin": "DEFAULT_VIN",
+    "make": "Volkswagen",
+    "model": "Passat",
+    "year": 2018,
+    "plate_number": "А123ВС26",
+    "owner_phone": "+79876543210",
+    "created_at": "2025-04-19T09:00:00Z"
+  },
+  {
+    "id": 2,
+    "vin": "1HGBH41JXMN109186",
+    "make": "Honda",
+    "model": "Accord",
+    "year": 2019,
+    "plate_number": "В456СТ99",
+    "owner_phone": "+79123456789",
+    "created_at": "2025-04-19T09:15:00Z"
+  },
+  {
+    "id": 3,
+    "vin": "5FNRL6H71NB058437",
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2017,
+    "plate_number": "С789ТУ77",
+    "owner_phone": "+79034567890",
+    "created_at": "2025-04-19T09:30:00Z"
+  },
+  {
+    "id": 4,
+    "vin": "WVWZZZ1JZXW181003",
+    "make": "BMW",
+    "model": "X5",
+    "year": 2020,
+    "plate_number": "Х001УФ21",
+    "owner_phone": "+79567890123",
+    "created_at": "2025-04-19T09:45:00Z"
+  },
+  {
+    "id": 5,
+    "vin": "JF1SJ5LC5DG048667",
+    "make": "Subaru",
+    "model": "Forester",
+    "year": 2016,
+    "plate_number": "Н567ОП78",
+    "owner_phone": "+79876543210",
+    "created_at": "2025-04-19T10:00:00Z"
   }
 ]

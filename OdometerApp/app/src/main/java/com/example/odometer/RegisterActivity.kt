@@ -23,6 +23,8 @@ import com.example.odometerapp.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.Color
 
 class RegisterActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -39,120 +41,131 @@ class RegisterActivity : AppCompatActivity() {
             var error by remember { mutableStateOf("") }
             var isLoading by remember { mutableStateOf(false) }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
             ) {
-                Text("Регистрация", style = MaterialTheme.typography.headlineLarge)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Регистрация", style = MaterialTheme.typography.headlineLarge)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    TextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Email") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = { Text("Имя пользователя") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Пароль") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = { Text("Подтвердите пароль") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = vin,
-                    onValueChange = { vin = it.uppercase() },
-                    label = { Text("VIN автомобиля") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                if (error.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(error, color = MaterialTheme.colorScheme.error)
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    TextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = { Text("Имя пользователя") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                Button(
-                    onClick = {
-                        if (validateInputs(email, password, confirmPassword, vin, username)) {
-                            isLoading = true
-                            error = ""
-                            
-                            val registerRequest = RegisterRequest(email, password, vin, username)
-                            ApiService.authApi.register(registerRequest)
-                                .enqueue(object : Callback<AuthResponse> {
-                                    override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                                        isLoading = false
-                                        if (response.isSuccessful) {
-                                            val token = response.body()?.token
-                                            if (token != null) {
-                                                // Сохраняем токен в SharedPreferences
-                                                getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                                                    .putString("jwt_token", token)
-                                                    .apply()
-                                                // Переходим на главный экран
-                                                startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
-                                                finish()
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Пароль") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        label = { Text("Подтвердите пароль") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = vin,
+                        onValueChange = { vin = it.uppercase() },
+                        label = { Text("VIN автомобиля") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    if (error.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = MaterialTheme.colorScheme.error)
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            if (validateInputs(email, password, confirmPassword, vin, username)) {
+                                isLoading = true
+                                error = ""
+                                
+                                val registerRequest = RegisterRequest(email, password, vin, username)
+                                ApiService.authApi.register(registerRequest)
+                                    .enqueue(object : Callback<AuthResponse> {
+                                        override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                                            isLoading = false
+                                            if (response.isSuccessful) {
+                                                val token = response.body()?.token
+                                                if (token != null) {
+                                                    // Сохраняем токен в SharedPreferences
+                                                    getSharedPreferences("prefs", MODE_PRIVATE).edit()
+                                                        .putString("jwt_token", token)
+                                                        .apply()
+                                                        
+                                                    // Сохраняем VIN в sensor_prefs для использования в рекомендациях
+                                                    getSharedPreferences("sensor_prefs", MODE_PRIVATE).edit()
+                                                        .putString("vehicle_id", vin)
+                                                        .apply()
+                                                        
+                                                    // Переходим на главный экран
+                                                    startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+                                                    finish()
+                                                } else {
+                                                    error = "Пустой токен получен"
+                                                }
                                             } else {
-                                                error = "Пустой токен получен"
+                                                error = "Ошибка регистрации: ${response.code()}"
                                             }
-                                        } else {
-                                            error = "Ошибка регистрации: ${response.code()}"
                                         }
-                                    }
 
-                                    override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                                        isLoading = false
-                                        error = "Ошибка сети: ${t.localizedMessage}"
-                                    }
-                                })
-                        }
-                    },
-                    enabled = !isLoading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Зарегистрироваться")
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
+                                        override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                                            isLoading = false
+                                            error = "Ошибка сети: ${t.localizedMessage}"
+                                        }
+                                    })
+                            }
+                        },
+                        enabled = !isLoading,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Зарегистрироваться")
+                    }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Button(
-                    onClick = {
-                        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
-                        finish()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Уже есть аккаунт? Войти")
+                    Button(
+                        onClick = {
+                            startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                            finish()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Уже есть аккаунт? Войти")
+                    }
                 }
             }
         }

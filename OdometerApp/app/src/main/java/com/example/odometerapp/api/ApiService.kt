@@ -13,6 +13,12 @@ interface ApiService {
         @Header("X-Sensor-Token") token: String,
         @Body data: SensorData
     ): Response<SensorResponse>
+    
+    @GET("analysis/latest/{vehicleId}")
+    suspend fun getLatestAnalysis(
+        @Path("vehicleId") vehicleId: String,
+        @Header("Authorization") authToken: String
+    ): Response<AnalysisResponse>
 }
 
 data class TokenResponse(
@@ -37,4 +43,22 @@ data class HealthData(
     val oilHealth: Double,
     val tiresHealth: Double,
     val brakesHealth: Double
+)
+
+data class AnalysisResponse(
+    val status: String,
+    val analysis: VehicleAnalysis
+)
+
+data class VehicleAnalysis(
+    val vehicle_id: String,
+    val engine_health: Int,
+    val oil_health: Int,
+    val tires_health: Int,
+    val brakes_health: Int,
+    val suspension_health: Int,
+    val battery_health: Int,
+    val overall_health: Int,
+    val recommendations: List<String>,
+    val created_at: String
 )

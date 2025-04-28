@@ -7,4 +7,18 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Health status colors -->
+    <color name="health_good">#4CAF50</color>   <!-- Green -->
+    <color name="health_warning">#FFC107</color> <!-- Yellow/Amber -->
+    <color name="health_critical">#F44336</color> <!-- Red -->
+    
+    <!-- Дополнительные цвета для категорий -->
+    <color name="category_engine">#3F51B5</color>
+    <color name="category_oil">#FF9800</color>
+    <color name="category_tires">#009688</color>
+    <color name="category_brakes">#E91E63</color>
+    <color name="category_suspension">#673AB7</color>
+    <color name="category_battery">#607D8B</color>
+    <color name="category_general">#795548</color>
 </resources>

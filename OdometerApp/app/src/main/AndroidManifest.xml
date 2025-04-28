@@ -23,6 +23,8 @@
         android:theme="@style/Theme.OdometerApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        
+        <!-- Основная активити с мониторингом -->
         <activity
             android:name="com.example.odometer.MainActivity"
             android:exported="true"
@@ -33,21 +35,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Активити рекомендаций по обслуживанию -->
         <activity
-            android:name=".ui.VinActivity"
-            android:exported="true">
-        </activity>
+            android:name=".ui.RecommendationsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.OdometerApp" />
+        
+        <!-- Активити для старой версии MainActivity (если используется) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        
+        <!-- Активити выбора Bluetooth устройства -->
+        <activity
+            android:name=".BluetoothDeviceSelectionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat" />
+        
+        <!-- Активити для авторизации и регистрации -->
         <activity
             android:name="com.example.odometer.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat" />
+        
         <activity
             android:name="com.example.odometer.RegisterActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat" />
-        <activity 
-            android:name="com.example.odometer.BluetoothDeviceSelectionActivity"
-            android:exported="false" />
+            
         <activity 
             android:name="com.example.odometer.BluetoothSelection"
             android:exported="false"

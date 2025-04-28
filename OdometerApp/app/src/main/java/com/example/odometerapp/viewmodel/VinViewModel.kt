@@ -41,7 +41,6 @@ class VinViewModel : ViewModel() {
     }
 
     fun validateVin(vin: String): Boolean {
-        // Базовая валидация VIN
         return vin.length == 17 && vin.matches(Regex("[A-HJ-NPR-Z0-9]{17}"))
     }
 }

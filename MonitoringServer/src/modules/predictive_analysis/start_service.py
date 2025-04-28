@@ -6,7 +6,12 @@ import sys
 import time
 import logging
 import subprocess
+import threading
 from dotenv import load_dotenv
+from datetime import datetime
+from api_server import app
+from predictive_analyzer import PredictiveAnalyzer
+from database import Database
 
 # Set up logging
 logging.basicConfig(
@@ -17,7 +22,7 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger("StartupScript")
+logger = logging.getLogger("Service")
 
 # Load environment variables
 load_dotenv()
@@ -84,70 +89,45 @@ def install_full_requirements():
         logger.error(f"Error installing requirements: {str(e)}")
         return False
 
+def run_periodic_analysis():
+    """
+    Запускает анализ всех автомобилей каждые 20 минут
+    """
+    analyzer = PredictiveAnalyzer()
+    
+    while True:
+        try:
+            logger.info("Starting periodic analysis of all vehicles")
+            results = analyzer.run_analysis()
+            
+            if results:
+                logger.info(f"Analysis completed for {len(results)} vehicles")
+            else:
+                logger.warning("No vehicles analyzed or analysis failed")
+                
+            # Ждем 20 минут перед следующим анализом
+            time.sleep(1200)  # 20 минут = 1200 секунд
+            
+        except Exception as e:
+            logger.error(f"Error in periodic analysis: {str(e)}")
+            time.sleep(60)  # При ошибке ждем минуту перед повторной попыткой
+
 def start_service():
     """
-    Запустить API сервер для предиктивного анализа
+    Запускает сервис анализа и API сервер
     """
     try:
-        # Проверяем наличие основных библиотек
-        if not check_requirements():
-            logger.error("Failed to install critical requirements. Exiting...")
-            return False
-            
-        # Пробуем установить все зависимости
-        install_full_requirements()
+        # Запускаем периодический анализ в отдельном потоке
+        analysis_thread = threading.Thread(target=run_periodic_analysis)
+        analysis_thread.daemon = True
+        analysis_thread.start()
         
-        # Сразу используем файловую БД вместо SQLite или PostgreSQL
-        logger.info("Using pure file-based mock database")
-        
-        # Переименовываем файл database.py, если он существует
-        if os.path.exists("database.py"):
-            backup_filename = f"database.py.bak.{int(time.time())}"
-            os.rename("database.py", backup_filename)
-            logger.info(f"Renamed database.py to {backup_filename}")
-        
-        # Копируем database_pure_mock.py в database.py
-        if os.path.exists("database_pure_mock.py"):
-            # Copy the file instead of renaming to preserve the original
-            import shutil
-            shutil.copy2("database_pure_mock.py", "database.py")
-            logger.info("Copied pure Python mock database implementation to database.py")
-        else:
-            logger.error("No database_pure_mock.py file found. Cannot continue.")
-            return False
-        
-        try:
-            # Test database connection before proceeding
-            from importlib import reload
-            try:
-                import database
-                reload(database)
-            except:
-                import database
-                
-            from database import Database
-            test_db = Database()
-            
-            # Create data directory if it doesn't exist
-            data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mock_data')
-            os.makedirs(data_dir, exist_ok=True)
-            
-            # Add sample data for testing
-            if hasattr(test_db, 'add_sample_data_if_empty'):
-                test_db.add_sample_data_if_empty()
-                logger.info("Added sample data if needed")
-            
-            # Start API server
-            logger.info("Starting API server with pure Python database...")
-            subprocess.call([sys.executable, "api_server.py"])
-        except Exception as db_error:
-            logger.error(f"Database error: {str(db_error)}")
-            logger.error("Could not initialize database. Check error log for details.")
-            return False
+        # Запускаем API сервер
+        app.run(host='0.0.0.0', port=5001, debug=False)
         
     except Exception as e:
-        logger.error(f"Error starting service: {str(e)}")
-        return False
+        logger.error(f"Service error: {str(e)}")
+        raise
 
 if __name__ == "__main__":
     logger.info("Starting predictive analysis service...")

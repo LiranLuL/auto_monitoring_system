@@ -11,11 +11,13 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.odometerapp.ui.RecommendationsActivity
 
 class BluetoothDeviceSelectionActivity : AppCompatActivity() {
     private var bluetoothAdapter: BluetoothAdapter? = null
@@ -46,6 +48,8 @@ class BluetoothDeviceSelectionActivity : AppCompatActivity() {
             finish()
             return
         }
+
+
 
         deviceList.setOnItemClickListener { _, _, position, _ ->
             if (position < discoveredDevices.size) {

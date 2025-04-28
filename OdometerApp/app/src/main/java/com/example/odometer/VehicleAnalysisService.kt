@@ -39,7 +39,7 @@ class VehicleAnalysisService(private val context: Context) {
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
     
     // Default API base URL in case we can't get it from resources
-    private val DEFAULT_API_BASE_URL = "http://192.168.0.121:5000/api"
+    private val DEFAULT_API_BASE_URL = "http://192.168.0.121:5001/api"
     
     /**
      * Fetch the latest analysis data from the server
