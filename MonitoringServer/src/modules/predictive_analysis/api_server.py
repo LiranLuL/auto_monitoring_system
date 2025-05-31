@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from database import Database
 from predictive_analyzer import PredictiveAnalyzer
 from datetime import datetime
+import random
 
 # Load environment variables
 load_dotenv()
@@ -136,6 +137,7 @@ def analyze():
 def analyze_vehicle(vehicle_id):
     """
     Эндпоинт для запуска анализа для конкретного автомобиля.
+    vehicle_id может быть как числовым ID, так и VIN
     """
     if not authenticate():
         return json_response({
@@ -144,13 +146,41 @@ def analyze_vehicle(vehicle_id):
         }, 401)
     
     try:
-        results = analyzer.run_analysis(vehicle_id)
+        # Проверяем, это VIN или числовой ID
+        is_vin = not vehicle_id.isdigit()
+        logger.info(f"Запрос анализа для {'VIN' if is_vin else 'ID'} {vehicle_id}")
+        
+        # Если передан VIN, получаем ID по нему
+        if is_vin:
+            vehicle = db.get_vehicle_by_vin(vehicle_id)
+            if not vehicle:
+                logger.warning(f"Автомобиль с VIN {vehicle_id} не найден")
+                return json_response({
+                    'status': 'error',
+                    'message': f'Vehicle with VIN {vehicle_id} not found'
+                }, 404)
+            
+            vehicle_id_for_analysis = vehicle.get('id')
+            logger.info(f"Найден автомобиль с VIN {vehicle_id}, ID: {vehicle_id_for_analysis}")
+        else:
+            # Если числовой ID, используем напрямую
+            vehicle_id_for_analysis = vehicle_id
+            
+        # Запускаем анализ для найденного ID
+        results = analyzer.run_analysis(vehicle_id_for_analysis)
         
         if results:
+            # Преобразуем результаты для ответа
+            result_data = results[0] if isinstance(results, list) else results
+            
+            # Проверяем, чтобы рекомендации были списком
+            if 'recommendations' in result_data and isinstance(result_data['recommendations'], str):
+                result_data['recommendations'] = [rec.strip() for rec in result_data['recommendations'].split(',') if rec.strip()]
+            
             return json_response({
                 'status': 'success',
                 'message': f'Analysis completed for vehicle {vehicle_id}',
-                'results': results[0] if isinstance(results, list) else results
+                'results': result_data
             })
         else:
             return json_response({
@@ -169,6 +199,7 @@ def analyze_vehicle(vehicle_id):
 def get_latest_analysis(vehicle_id):
     """
     Эндпоинт для получения последнего результата анализа для автомобиля.
+    vehicle_id может быть как числовым ID, так и VIN
     """
     if not authenticate() and not authenticate_mobile():
         return json_response({
@@ -177,9 +208,29 @@ def get_latest_analysis(vehicle_id):
         }, 401)
     
     try:
-        logger.info(f"Запрос анализа для автомобиля {vehicle_id}")
+        # Проверяем, это VIN или числовой ID
+        is_vin = not vehicle_id.isdigit()
+        logger.info(f"Запрос анализа для {'VIN' if is_vin else 'ID'} {vehicle_id}")
         
         # Получаем последний анализ из базы данных
+        if is_vin:
+            # Сначала получаем данные автомобиля по VIN
+            vehicle = db.get_vehicle_by_vin(vehicle_id)
+            if not vehicle:
+                logger.warning(f"Автомобиль с VIN {vehicle_id} не найден")
+                return json_response({
+                    'status': 'error',
+                    'message': f'Vehicle with VIN {vehicle_id} not found'
+                }, 404)
+            
+            # Используем ID из полученных данных
+            vehicle_id_for_analysis = vehicle.get('id')
+            logger.info(f"Найден автомобиль с VIN {vehicle_id}, ID: {vehicle_id_for_analysis}")
+        else:
+            # Если передан числовой ID, используем его напрямую
+            vehicle_id_for_analysis = vehicle_id
+        
+        # Получаем анализ для найденного ID
         query = """
         SELECT * FROM vehicle_analysis
         WHERE vehicle_id = ?
@@ -187,138 +238,70 @@ def get_latest_analysis(vehicle_id):
         LIMIT 1
         """
         
-        result = db.execute_query(query, (vehicle_id,))
+        result = db.execute_query(query, (vehicle_id_for_analysis,))
         
         if result:
-            logger.info(f"Найден анализ для автомобиля {vehicle_id}")
-            # Parse recommendations from comma-separated string to list
-            if 'recommendations' in result[0]:
-                result[0]['recommendations'] = result[0]['recommendations'].split(',')
+            logger.info(f"Найден анализ для {'VIN' if is_vin else 'ID'} {vehicle_id}")
+            
+            # В новой версии рекомендации уже хранятся как список, но обрабатываем и строковый формат для совместимости
+            if result[0].get('recommendations') and isinstance(result[0].get('recommendations'), str):
+                result[0]['recommendations'] = [rec.strip() for rec in result[0]['recommendations'].split(',') if rec.strip()]
             
             return json_response({
                 'status': 'success',
                 'analysis': result[0]
             })
-        else:
-            logger.info(f"Анализ для автомобиля {vehicle_id} не найден, создаем новый")
-            
-            # Проверяем, существует ли автомобиль в базе по VIN
-            # Используем vehicle_id (который является VIN) только для поиска по полю vin
-            vehicle_check = db.execute_query("SELECT id FROM vehicles WHERE vin = ?", (vehicle_id,))
-
-            vehicle_db_id = None # Инициализируем ID
-
-            if not vehicle_check:
-                logger.warning(f"Автомобиль {vehicle_id} (VIN) не найден в базе, создаем новую запись.")
-                try:
-                    # Создаем запись о автомобиле, ID должен генерироваться БД (если автоинкрементный)
-                    # Убираем явную вставку ID
-                    db.execute_query(
-                        "INSERT INTO vehicles (vin, make, model) VALUES (?, ?, ?)", # Убрали ID из INSERT
-                        (vehicle_id, "Unknown", "Unknown"),
-                        fetch=False
-                    )
-                    logger.info(f"Создана запись о автомобиле с VIN {vehicle_id}")
-                    
-                    # Получаем ID только что созданного автомобиля
-                    new_vehicle_data = db.execute_query("SELECT id FROM vehicles WHERE vin = ?", (vehicle_id,))
-                    if new_vehicle_data:
-                        vehicle_db_id = new_vehicle_data[0]['id'] # Получаем реальный ID
-                        logger.info(f"ID нового автомобиля: {vehicle_db_id}")
-                    else:
-                         logger.error(f"Не удалось получить ID для только что созданного автомобиля {vehicle_id}")
-                         raise Exception(f"Failed to retrieve ID for newly created vehicle {vehicle_id}")
-                except Exception as insert_err:
-                     logger.error(f"Ошибка при создании записи автомобиля {vehicle_id}: {str(insert_err)}")
-                     raise insert_err # Перебрасываем ошибку дальше
-            else:
-                # Если автомобиль найден, получаем его ID
-                vehicle_db_id = vehicle_check[0]['id']
-                logger.info(f"Автомобиль {vehicle_id} найден в базе, ID: {vehicle_db_id}")
-                
-            # Если vehicle_db_id не установлен (из-за ошибки выше), прерываемся
-            if vehicle_db_id is None:
-                 logger.error("Не удалось определить ID автомобиля для анализа.")
-                 raise Exception("Could not determine vehicle ID for analysis.")
-
-            # --- ВАЖНО ---
-            # Убедитесь, что последующие вызовы используют ПРАВИЛЬНЫЙ ID.
-            # Если таблица `vehicle_analysis` связана с `vehicles` по числовому ID,
-            # используйте `vehicle_db_id` (число).
-            # Если `vehicle_analysis.vehicle_id` хранит VIN (текст), используйте `vehicle_id`.
-            # Замените `vehicle_id_for_analysis` на нужную переменную ниже.
-            
-            # !!! ЗАМЕНИТЕ ЭТО НА vehicle_db_id ИЛИ vehicle_id В ЗАВИСИМОСТИ ОТ СХЕМЫ !!!
-            vehicle_id_for_analysis = vehicle_db_id # Предполагаем, что нужен числовой ID, ИСПРАВЬТЕ ЕСЛИ НЕ ТАК
-
-            logger.info(f"Запускаем анализ для ID автомобиля: {vehicle_id_for_analysis} (тип: {type(vehicle_id_for_analysis)})")
-            new_analysis = analyzer.run_analysis(vehicle_id_for_analysis)
-
-            if new_analysis and len(new_analysis) > 0:
-                logger.info(f"Создан новый анализ для автомобиля с ID {vehicle_id_for_analysis}")
-                analysis_data = new_analysis[0] if isinstance(new_analysis, list) else new_analysis
-                
-                # Убедимся, что и в результат записывается правильный ID
-                if 'vehicle_id' in analysis_data:
-                     analysis_data['vehicle_id'] = vehicle_id_for_analysis
-
-                # --- ИСПРАВЛЕНИЕ --- 
-                # Проверяем поле recommendations и преобразуем строку в список, если нужно
-                if 'recommendations' in analysis_data and isinstance(analysis_data['recommendations'], str):
-                    logger.info("Преобразуем строку рекомендаций в список")
-                    # Разделяем по запятой, удаляем лишние пробелы у каждого элемента
-                    analysis_data['recommendations'] = [rec.strip() for rec in analysis_data['recommendations'].split(',') if rec.strip()]
-                elif 'recommendations' not in analysis_data:
-                     logger.warning("Поле 'recommendations' отсутствует в результатах анализа")
-                     analysis_data['recommendations'] = [] # Устанавливаем пустой список по умолчанию
-                # --- КОНЕЦ ИСПРАВЛЕНИЯ ---
-
+        
+        # Если анализ не найден, запускаем новый
+        logger.info(f"Анализ для {'VIN' if is_vin else 'ID'} {vehicle_id} не найден, создаем новый")
+        
+        # Получаем данные автомобиля
+        if is_vin:
+            vehicle = db.get_vehicle_by_vin(vehicle_id)
+            if not vehicle:
+                logger.error(f"Автомобиль с VIN {vehicle_id} не найден при повторной проверке")
                 return json_response({
-                    'status': 'success',
-                    'analysis': analysis_data
-                })
+                    'status': 'error',
+                    'message': f'Vehicle with VIN {vehicle_id} not found'
+                }, 404)
+        else:
+            vehicle = db.get_vehicle_by_id(vehicle_id)
+            if not vehicle:
+                logger.error(f"Автомобиль с ID {vehicle_id} не найден")
+                return json_response({
+                    'status': 'error',
+                    'message': f'Vehicle with ID {vehicle_id} not found'
+                }, 404)
+        
+        # Запускаем анализ для этого автомобиля
+        logger.info(f"Запускаем анализ для автомобиля: {vehicle_id_for_analysis}")
+        new_analysis = analyzer.run_analysis(vehicle_id_for_analysis)
+        
+        # Проверяем, успешно ли выполнен анализ
+        if new_analysis and len(new_analysis) > 0:
+            logger.info(f"Создан новый анализ для автомобиля {vehicle_id_for_analysis}")
+            analysis_data = new_analysis[0] if isinstance(new_analysis, list) else new_analysis
             
-            logger.warning(f"Не удалось создать автоматический анализ для ID {vehicle_id_for_analysis}, использую дефолтные данные")
+            # Гарантируем, что ID автомобиля в анализе соответствует запрошенному
+            if 'vehicle_id' in analysis_data:
+                analysis_data['vehicle_id'] = vehicle_id_for_analysis
             
-            # Генерируем дефолтный анализ
-            # Сохраняем исходный список рекомендаций
-            default_recommendations_list = [
-                "Рекомендуется регулярная проверка уровня масла",
-                "Проверьте давление в шинах при следующем ТО",
-                "Рекомендуется диагностика двигателя. Обнаружены признаки износа",
-                "Регулярно проверяйте состояние тормозной системы"
-            ]
-            default_analysis = {
-                # Используем правильный ID для сохранения
-                'vehicle_id': vehicle_id_for_analysis,
-                'engine_health': 80,
-                'oil_health': 75,
-                'tires_health': 85,
-                'brakes_health': 90,
-                'suspension_health': 85,
-                'battery_health': 80,
-                'overall_health': 82,
-                'recommendations': default_recommendations_list, # Используем список здесь
-                'created_at': datetime.now().isoformat()
-            }
+            # Гарантируем, что рекомендации являются списком
+            if 'recommendations' in analysis_data and isinstance(analysis_data['recommendations'], str):
+                logger.info("Преобразуем строку рекомендаций в список")
+                analysis_data['recommendations'] = [rec.strip() for rec in analysis_data['recommendations'].split(',') if rec.strip()]
             
-            # Сохраняем дефолтный анализ в базу
-            # db.save_analysis_result может изменить default_analysis['recommendations'] на строку
-            try:
-                 db.save_analysis_result(default_analysis.copy()) # Передаем копию, чтобы оригинал не изменился
-            except Exception as save_err:
-                 logger.error(f"Ошибка при сохранении дефолтного анализа для ID {vehicle_id_for_analysis}: {save_err}")
-                 # Решаем, стоит ли возвращать ошибку или все же отдать дефолтный ответ
-
-            # Возвращаем JSON, гарантируя, что recommendations - это массив
-            # Создаем словарь для ответа заново или модифицируем существующий
-            response_data = default_analysis # Начинаем с данных, которые могли быть изменены
-            response_data['recommendations'] = default_recommendations_list # Убеждаемся, что возвращаем список
-
             return json_response({
                 'status': 'success',
-                'analysis': response_data
+                'analysis': analysis_data
             })
+        else:
+            # Если анализ не удалось выполнить, возвращаем ошибку
+            logger.error(f"Не удалось выполнить анализ для автомобиля {vehicle_id_for_analysis}")
+            return json_response({
+                'status': 'error',
+                'message': f'Failed to perform analysis for vehicle {vehicle_id_for_analysis}'
+            }, 500)
     
     except Exception as e:
         logger.error(f"Error getting latest analysis: {str(e)}")
@@ -331,6 +314,7 @@ def get_latest_analysis(vehicle_id):
 def get_analysis_history(vehicle_id):
     """
     Эндпоинт для получения истории результатов анализа для автомобиля.
+    vehicle_id может быть как числовым ID, так и VIN
     """
     if not authenticate():
         return json_response({
@@ -339,6 +323,26 @@ def get_analysis_history(vehicle_id):
         }, 401)
     
     try:
+        # Проверяем, это VIN или числовой ID
+        is_vin = not vehicle_id.isdigit()
+        logger.info(f"Запрос истории анализов для {'VIN' if is_vin else 'ID'} {vehicle_id}")
+        
+        # Если передан VIN, получаем ID по нему
+        if is_vin:
+            vehicle = db.get_vehicle_by_vin(vehicle_id)
+            if not vehicle:
+                logger.warning(f"Автомобиль с VIN {vehicle_id} не найден")
+                return json_response({
+                    'status': 'error',
+                    'message': f'Vehicle with VIN {vehicle_id} not found'
+                }, 404)
+            
+            vehicle_id_for_query = vehicle.get('id')
+            logger.info(f"Найден автомобиль с VIN {vehicle_id}, ID: {vehicle_id_for_query}")
+        else:
+            # Если числовой ID, используем напрямую
+            vehicle_id_for_query = vehicle_id
+        
         # Получаем историю анализов из базы данных
         query = """
         SELECT * FROM vehicle_analysis
@@ -346,19 +350,21 @@ def get_analysis_history(vehicle_id):
         ORDER BY created_at DESC
         """
         
-        results = db.execute_query(query, (vehicle_id,))
+        results = db.execute_query(query, (vehicle_id_for_query,))
         
         if results:
-            # Parse recommendations from comma-separated string to list
+            # В новой версии рекомендации уже хранятся как список, но обрабатываем и строковый формат для совместимости
             for result in results:
-                if 'recommendations' in result:
-                    result['recommendations'] = result['recommendations'].split(',')
+                if 'recommendations' in result and isinstance(result['recommendations'], str):
+                    result['recommendations'] = [rec.strip() for rec in result['recommendations'].split(',') if rec.strip()]
             
+            logger.info(f"Найдено {len(results)} записей в истории анализов")
             return json_response({
                 'status': 'success',
                 'history': results
             })
         else:
+            logger.warning(f"История анализов для {'VIN' if is_vin else 'ID'} {vehicle_id} не найдена")
             return json_response({
                 'status': 'warning',
                 'message': f'No analysis history found for vehicle {vehicle_id}'
@@ -370,6 +376,150 @@ def get_analysis_history(vehicle_id):
             'status': 'error',
             'message': str(e)
         }, 500)
+
+@app.route('/api/emulator/recommendations/<vehicle_id>', methods=['GET'])
+def get_emulator_recommendations(vehicle_id):
+
+    try:
+        logger.info(f"Запрос эмулированных рекомендаций для автомобиля: {vehicle_id}")
+        
+        # Use vehicle ID to create deterministic randomness
+        seed = sum(ord(c) for c in vehicle_id)
+        # Add time-based component to make it change slightly on repeated calls
+        time_factor = int(datetime.now().timestamp() / 60) % 10  # Changes every minute
+        random_factor = (seed % 15) - 7 + time_factor - 5  # Between -12 and +12
+        
+        # Generate health ratings with some randomness
+        engine_health = min(100, max(0, (seed % 25 + 70) + random_factor))
+        oil_health = min(100, max(0, ((seed * 2) % 30 + 65) + random_factor))
+        tires_health = min(100, max(0, ((seed * 3) % 25 + 70) + random_factor))
+        brakes_health = min(100, max(0, ((seed * 5) % 20 + 75) + random_factor))
+        suspension_health = min(100, max(0, ((seed * 7) % 25 + 70) + random_factor))
+        battery_health = min(100, max(0, ((seed * 11) % 20 + 75) + random_factor))
+        
+        # Calculate overall health
+        overall_health = int((engine_health + oil_health + tires_health + 
+                             brakes_health + suspension_health + battery_health) / 6)
+        
+        # Generate recommendations
+        recommendations = []
+        
+        # Engine recommendations
+        if engine_health < 75:
+            recommendations.append("Срочно требуется диагностика двигателя. Наблюдаются признаки серьезного износа.")
+        elif engine_health < 85:
+            recommendations.append("Рекомендуется диагностика двигателя. Обнаружены признаки износа.")
+        
+        # Oil recommendations
+        if oil_health < 70:
+            recommendations.append("Требуется срочная замена моторного масла и фильтра.")
+        elif oil_health < 80:
+            recommendations.append("Рекомендуется замена моторного масла при следующем ТО.")
+        else:
+            recommendations.append("Регулярно проверяйте уровень масла.")
+        
+        # Tires recommendations
+        if tires_health < 80:
+            recommendations.append("Требуется проверка давления в шинах и их состояния. Возможен неравномерный износ.")
+        else:
+            recommendations.append("Проверьте давление в шинах при следующем ТО.")
+        
+        # Brakes recommendations
+        if brakes_health < 80:
+            recommendations.append("Рекомендуется проверка тормозной системы. Возможен износ колодок.")
+        else:
+            recommendations.append("Регулярно проверяйте состояние тормозной системы.")
+        
+        # Suspension recommendations
+        if suspension_health < 80:
+            recommendations.append("Рекомендуется диагностика подвески. Возможны признаки износа амортизаторов.")
+        
+        # Battery recommendations
+        if battery_health < 80:
+            recommendations.append("Рекомендуется проверка аккумулятора. Возможно снижение емкости.")
+        
+        # Additional recommendations
+        additional_recs = [
+            "Проверьте состояние воздушного фильтра при следующем ТО.",
+            "Рекомендуется проверка уровня охлаждающей жидкости.",
+            "Следите за уровнем жидкости в бачке омывателя.",
+            "Рекомендуется проверка работы системы кондиционирования.",
+            "Проверьте состояние щеток стеклоочистителя.",
+            "Рекомендуется проверка и регулировка углов установки колес.",
+            "Проверьте состояние приводных ремней.",
+            "Рекомендуется замена салонного фильтра.",
+            "Визуально осмотрите тормозные диски на наличие повреждений.",
+            "Рекомендуется проверка состояния аккумуляторных клемм.",
+            "Проверьте состояние и натяжение ремня генератора.",
+            "Проверьте герметичность сальников и прокладок.",
+            "Следите за расходом топлива - повышенный расход может указывать на проблемы."
+        ]
+        
+        # Add 1-3 additional recommendations based on vehicle ID
+        additional_count = 1 + (seed % 3)
+        for i in range(additional_count):
+            rec_index = (seed + i * 17) % len(additional_recs)
+            if additional_recs[rec_index] not in recommendations:
+                recommendations.append(additional_recs[rec_index])
+        
+        # Create the analysis result
+        analysis = {
+            'vehicle_id': vehicle_id,
+            'engine_health': engine_health,
+            'oil_health': oil_health,
+            'tires_health': tires_health,
+            'brakes_health': brakes_health,
+            'suspension_health': suspension_health,
+            'battery_health': battery_health,
+            'overall_health': overall_health,
+            'recommendations': recommendations,
+            'created_at': datetime.now().isoformat()
+        }
+        
+        # Try to save to database
+        try:
+            # Convert recommendations to string for storage
+            recommendations_str = ','.join(recommendations) if recommendations else ""
+            
+            query = """
+            INSERT INTO vehicle_analysis 
+            (vehicle_id, engine_health, oil_health, tires_health, brakes_health,
+             suspension_health, battery_health, overall_health, recommendations, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """
+            
+            result = db.execute_query(
+                query, 
+                (vehicle_id, engine_health, oil_health, tires_health, brakes_health,
+                 suspension_health, battery_health, overall_health, recommendations_str, 
+                 datetime.now().isoformat())
+            )
+            
+            if result:
+                logger.info(f"Эмулированный анализ сохранен для автомобиля {vehicle_id}")
+        except Exception as e:
+            logger.error(f"Error saving emulated analysis: {str(e)}")
+            # Continue even if save fails
+        
+        return json_response({
+            'status': 'success',
+            'analysis': analysis
+        })
+    
+    except Exception as e:
+        logger.error(f"Error generating emulated recommendations: {str(e)}")
+        return json_response({
+            'status': 'error',
+            'message': str(e)
+        }, 500)
+
+# Also add an alias route for the same function
+@app.route('/api/analysis/recommendations/<vehicle_id>', methods=['GET'])
+def get_analysis_recommendations(vehicle_id):
+    """
+    Alias for the emulator recommendations endpoint
+    """
+    return get_emulator_recommendations(vehicle_id)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True) 

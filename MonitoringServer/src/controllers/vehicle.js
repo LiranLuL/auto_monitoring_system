@@ -5,25 +5,16 @@ class VehicleController {
     try {
       // Получаем параметры из тела запроса вместо query
       const { vin, ownerPhone } = req.body;
-      
       console.log('Searching vehicles with params:', { vin, ownerPhone });
-      
-      // Создаем объект с параметрами поиска
       const searchParams = {};
-      
       if (vin) {
         searchParams.vin = vin;
       }
-      
       if (ownerPhone) {
         searchParams.ownerPhone = ownerPhone;
       }
-      
-      // Выполняем поиск
       const vehicles = await Vehicle.search(searchParams);
-      
       console.log(`Found ${vehicles.length} vehicles`);
-      
       res.json(vehicles);
     } catch (error) {
       console.error('Error searching vehicles:', error);
@@ -56,8 +47,6 @@ class VehicleController {
     try {
       const { vehicleId } = req.params;
       const { engineHealth, oilHealth, tiresHealth, brakesHealth } = req.body;
-      
-      // Преобразуем значения в числа с плавающей точкой
       const healthData = {
         vehicleId,
         engineHealth: parseFloat(engineHealth),
@@ -65,7 +54,6 @@ class VehicleController {
         tiresHealth: parseFloat(tiresHealth),
         brakesHealth: parseFloat(brakesHealth)
       };
-
       const vehicle = await Vehicle.saveHealthData(healthData);
       res.json(vehicle);
     } catch (error) {
@@ -90,11 +78,9 @@ class VehicleController {
     try {
       const { vehicleId } = req.params;
       const vehicle = await Vehicle.findById(vehicleId);
-      
       if (!vehicle) {
         return res.status(404).json({ error: 'Vehicle not found' });
       }
-      
       res.json(vehicle);
     } catch (error) {
       console.error('Error getting vehicle by ID:', error);
@@ -121,11 +107,11 @@ class VehicleController {
   static async searchVehicleByOwner(req, res) {
     try {
       const { phone } = req.query;
-      
+
       if (!phone) {
         return res.status(400).json({ error: 'Owner phone number is required' });
       }
-      
+
       const vehicles = await Vehicle.searchByOwner(phone);
       res.json(vehicles);
     } catch (error) {
@@ -137,7 +123,7 @@ class VehicleController {
   static async searchVehicleByVin(req, res) {
     try {
       const { vin } = req.query;
-      
+            
       if (!vin) {
         return res.status(400).json({ error: 'VIN is required' });
       }

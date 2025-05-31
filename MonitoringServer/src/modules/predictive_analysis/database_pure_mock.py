@@ -15,11 +15,6 @@ load_dotenv()
 logger = logging.getLogger("Database_Pure_Mock")
 
 class Database:
-    """
-    Класс для имитации работы с базой данных.
-    Использует JSON-файлы для хранения данных, без зависимости от SQLite.
-    """
-    
     def __init__(self):
         """
         Инициализирует хранилище данных в памяти и файлах JSON.

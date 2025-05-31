@@ -120,7 +120,7 @@ class OdometerViewModel : ViewModel() {
         _isCollectingData.value = true
         
         dataCollectionJob = viewModelScope.launch {
-            val emulator = Elm327Emulator("192.168.0.121", 35000)
+            val emulator = Elm327Emulator("192.168.56.1", 35000)
             
             try {
                 val connected = emulator.connect()
@@ -236,7 +236,7 @@ class OdometerViewModel : ViewModel() {
     // Функция для генерации тестовых данных
     private suspend fun generateTestData(context: Context) {
         // Инициализируем эмулятор ELM327
-        val emulator = Elm327Emulator("192.168.0.121", 35000)
+        val emulator = Elm327Emulator("192.168.56.1", 35000)
         
         try {
             // Пытаемся подключиться к эмулятору
@@ -711,62 +711,7 @@ fun OdometerApp(viewModel: OdometerViewModel, mainActivity: MainActivity) {
                         }
                     }
                     
-                    // Карточка с показателями здоровья компонентов
-                    item {
-                        ElevatedCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                            ) {
-        Text(
-                                        text = "Состояние компонентов",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
-                                
-                                Spacer(modifier = Modifier.height(4.dp))
-                                
-                                // Двигатель
-                                HealthIndicator(
-                                    label = "Двигатель",
-                                    value = engineHealthValue
-                                )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                // Масло
-                                HealthIndicator(
-                                    label = "Масло",
-                                    value = oilHealthValue
-                                )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                // Шины
-                                HealthIndicator(
-                                    label = "Шины",
-                                    value = tiresHealthValue
-                                )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
-                                
-                                // Тормоза
-                                HealthIndicator(
-                                    label = "Тормоза",
-                                    value = brakesHealthValue
-                                )
-                            }
-                        }
-                    }
+
                     
                     // Карточка с температурой
                     item {
@@ -1531,7 +1476,7 @@ private suspend fun sendToBackend(context: Context, data: JSONObject) {
                 .getString("jwt_token", null)
             ?: throw Exception("JWT token not found")
             
-        val url = URL("http://192.168.0.121:5000/api/telemetry")
+        val url = URL("http://192.168.56.1:5000/api/telemetry")
         val connection = url.openConnection() as HttpURLConnection
         
         connection.apply {

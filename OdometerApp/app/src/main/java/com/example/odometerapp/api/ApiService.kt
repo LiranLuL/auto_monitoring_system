@@ -19,6 +19,11 @@ interface ApiService {
         @Path("vehicleId") vehicleId: String,
         @Header("Authorization") authToken: String
     ): Response<AnalysisResponse>
+    
+    @GET("emulator/recommendations/{vehicleId}")
+    suspend fun getEmulatedRecommendations(
+        @Path("vehicleId") vehicleId: String
+    ): Response<AnalysisResponse>
 }
 
 data class TokenResponse(

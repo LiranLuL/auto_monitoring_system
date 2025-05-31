@@ -3,9 +3,8 @@ const { pool } = require('../db');
 const Vehicle = require('../models/vehicle');
 require('dotenv').config();
 
-// URL to the predictive analysis service
 const ANALYSIS_SERVICE_URL = process.env.ANALYSIS_SERVICE_URL || 'http://localhost:5001';
-const API_TOKEN = process.env.ANALYSIS_API_TOKEN || 'your_secret_token_here';
+const API_TOKEN = process.env.ANALYSIS_API_TOKEN || 'secret_token_here';
 
 /**
  * Запрос анализа для указанного автомобиля
@@ -102,7 +101,6 @@ exports.getAnalysisHistory = async (req, res) => {
   const { id: userId, role } = req.user;
 
   try {
-    // Проверяем, есть ли у пользователя доступ к этому автомобилю
     const hasAccess = await Vehicle.checkUserVehicleAccess(userId, vehicleId, role);
     
     if (!hasAccess) {
@@ -175,5 +173,91 @@ exports.runFullAnalysis = async (req, res) => {
   } catch (error) {
     console.error('Ошибка при запуске полного анализа:', error.message);
     res.status(500).json({ message: 'Ошибка при запуске полного анализа' });
+  }
+};
+
+/**
+ * Сохранение результатов анализа (без аутентификации, для внутреннего использования)
+ */
+exports.saveAnalysisResults = async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+    const analysisData = req.body;
+    
+    console.log('Saving analysis results for vehicle:', vehicleId);
+    
+    if (!vehicleId) {
+      return res.status(400).json({ 
+        status: 'error',
+        message: 'ID автомобиля не указан' 
+      });
+    }
+    
+    // Проверяем, существует ли автомобиль
+    const vehicleCheck = await pool.query(
+      'SELECT id FROM user_vehicles WHERE id = $1',
+      [vehicleId]
+    );
+    
+    if (vehicleCheck.rows.length === 0) {
+      return res.status(404).json({
+        status: 'error', 
+        message: 'Автомобиль не найден' 
+      });
+    }
+    
+    // Преобразуем рекомендации в формат для хранения в БД
+    const recommendations = Array.isArray(analysisData.recommendations)
+      ? analysisData.recommendations.join(',')
+      : analysisData.recommendations;
+    
+    // Формируем запрос
+    const query = `
+      INSERT INTO vehicle_analysis (
+        vehicle_id, 
+        engine_health, 
+        oil_health, 
+        tires_health, 
+        brakes_health, 
+        suspension_health, 
+        battery_health, 
+        overall_health, 
+        recommendations,
+        created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING id
+    `;
+    
+    const now = new Date();
+    const values = [
+      vehicleId,
+      analysisData.engineHealth || 0,
+      analysisData.oilHealth || 0,
+      analysisData.tiresHealth || 0,
+      analysisData.brakesHealth || 0,
+      analysisData.suspensionHealth || 0,
+      analysisData.batteryHealth || 0,
+      analysisData.overallHealth || 0,
+      recommendations,
+      analysisData.createdAt ? new Date(analysisData.createdAt) : now
+    ];
+    
+    const result = await pool.query(query, values);
+    
+    console.log('Analysis results saved:', result.rows[0]);
+    
+    res.status(201).json({
+      status: 'success',
+      message: 'Результаты анализа успешно сохранены',
+      id: result.rows[0].id
+    });
+    
+  } catch (error) {
+    console.error('Error saving analysis results:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Ошибка при сохранении результатов анализа',
+      error: error.message
+    });
   }
 }; 

@@ -388,7 +388,7 @@ const WorkManagement: React.FC = () => {
                   onClick={() => handlePageChange(number)}
                   className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                     currentPage === number
-                      ? 'bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                      ? 'bg-primary-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
                       : 'bg-white text-gray-900 hover:bg-gray-50 focus:z-20'
                   }`}
                 >
@@ -450,7 +450,7 @@ const WorkManagement: React.FC = () => {
                 value={filterVin}
                 onChange={handleFilterChange}
                 placeholder="Фильтр по VIN"
-                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
               />
             </div>
             <div className="relative">
@@ -465,7 +465,7 @@ const WorkManagement: React.FC = () => {
                 value={filterOwnerPhone}
                 onChange={handleFilterChange}
                 placeholder="Фильтр по телефону"
-                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
               />
             </div>
           </div>
@@ -498,7 +498,7 @@ const WorkManagement: React.FC = () => {
                 </tr>
               ) : (
                 getCurrentItems().map((vehicle) => (
-                  <tr key={vehicle.id} className={selectedVehicle?.id === vehicle.id ? 'bg-indigo-50' : ''}>
+                  <tr key={vehicle.id} className={selectedVehicle?.id === vehicle.id ? 'bg-primary-50' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap">{vehicle.vin}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{vehicle.make}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{vehicle.model}</td>
@@ -508,7 +508,7 @@ const WorkManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => selectVehicle(vehicle)}
-                        className="text-indigo-600 hover:text-indigo-900"
+                        className="text-primary-600 hover:text-primary-900"
                       >
                         {selectedVehicle?.id === vehicle.id ? 'Выбрано' : 'Выбрать'}
                       </button>
@@ -535,7 +535,7 @@ const WorkManagement: React.FC = () => {
                   value={newVehicle.vin}
                   onChange={(e) => setNewVehicle({ ...newVehicle, vin: e.target.value })}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -545,7 +545,7 @@ const WorkManagement: React.FC = () => {
                   value={newVehicle.make}
                   onChange={(e) => setNewVehicle({ ...newVehicle, make: e.target.value })}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -555,7 +555,7 @@ const WorkManagement: React.FC = () => {
                   value={newVehicle.model}
                   onChange={(e) => setNewVehicle({ ...newVehicle, model: e.target.value })}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -565,7 +565,7 @@ const WorkManagement: React.FC = () => {
                   value={newVehicle.plate_number}
                   onChange={(e) => setNewVehicle({ ...newVehicle, plate_number: e.target.value })}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -575,7 +575,7 @@ const WorkManagement: React.FC = () => {
                   value={newVehicle.owner_phone}
                   onChange={(e) => setNewVehicle({ ...newVehicle, owner_phone: e.target.value })}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 />
               </div>
               <div>
@@ -586,7 +586,7 @@ const WorkManagement: React.FC = () => {
                   onChange={(e) => setNewVehicle({ ...newVehicle, mileage: parseInt(e.target.value) })}
                   required
                   min="0"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -742,9 +742,9 @@ const WorkManagement: React.FC = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className={`px-2 py-1 rounded text-sm ${
-                      work.status === 'completed' ? 'bg-green-100 text-green-800' :
+                      work.status === 'completed' ? 'bg-primary-100 text-primary-800' :
                       work.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-blue-100 text-blue-800'
+                      'bg-primary-100 text-primary-800'
                     }`}>
                       {work.status === 'completed' ? 'Завершено' : 
                        work.status === 'in_progress' ? 'В процессе' : 
@@ -754,7 +754,7 @@ const WorkManagement: React.FC = () => {
                       <button
                         onClick={() => handleStatusUpdate(work.id, 'completed')}
                         disabled={work.status === 'completed' || loading}
-                        className="text-sm bg-indigo-100 text-indigo-800 px-2 py-1 rounded hover:bg-indigo-200 disabled:opacity-50"
+                        className="text-sm bg-primary-100 text-primary-800 px-2 py-1 rounded hover:bg-primary-200 disabled:opacity-50"
                       >
                         Завершить
                       </button>

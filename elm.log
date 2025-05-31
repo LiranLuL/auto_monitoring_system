@@ -177,3 +177,286 @@ ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
 ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
 
 2025-04-29 01:19:50,096  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 01:20:24,232  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 01:20:24,244  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 01:20:43,837  root       accept_connection DEBUG    Connected by ('192.168.0.121', 60936)
+2025-04-29 01:20:59,075  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 01:20:59,075  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 01:20:59,076  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 01:21:58,755  root       accept_connection DEBUG    Connected by ('192.168.0.121', 60962)
+2025-04-29 01:22:22,514  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 01:22:22,514  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 01:22:22,514  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 06:22:53,176  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 06:22:53,189  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 06:27:51,468  root       accept_connection DEBUG    Connected by ('192.168.56.1', 51498)
+2025-04-29 06:47:32,251  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 06:47:32,266  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 06:48:00,530  root       accept_connection DEBUG    Connected by ('192.168.56.1', 55603)
+2025-04-29 06:52:36,117  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 06:52:36,125  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 06:52:43,929  root       accept_connection DEBUG    Connected by ('192.168.56.1', 55823)
+2025-04-29 06:52:57,598  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 06:52:57,598  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 06:52:57,598  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 06:55:19,145  root       accept_connection DEBUG    Connected by ('192.168.56.1', 55894)
+2025-04-29 07:05:54,829  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 07:05:54,829  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 07:05:54,829  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 07:05:55,587  root       accept_connection DEBUG    Connected by ('192.168.56.1', 56052)
+2025-04-29 07:48:33,718  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 07:48:33,726  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 07:48:33,727  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 07:55:46,473  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 07:55:46,491  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 08:00:35,460  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 08:00:35,472  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 08:06:20,375  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 08:06:20,391  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 08:07:32,076  root       accept_connection DEBUG    Connected by ('192.168.56.1', 58245)
+2025-04-29 08:36:59,408  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 08:36:59,419  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 08:37:28,412  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 08:37:28,420  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 08:38:04,388  root       accept_connection DEBUG    Connected by ('192.168.56.1', 59064)
+2025-04-29 08:51:19,371  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 08:51:19,382  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 08:53:59,423  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 08:53:59,434  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 09:06:56,271  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 09:06:56,283  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 09:27:14,288  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 09:27:14,298  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 09:27:44,457  root       accept_connection DEBUG    Connected by ('192.168.56.1', 60804)
+2025-04-29 09:47:22,589  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 09:47:22,604  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 09:47:22,839  root       accept_connection DEBUG    Connected by ('192.168.56.1', 62806)
+2025-04-29 09:47:34,530  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 09:47:34,530  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 09:47:34,530  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 09:47:39,532  root       accept_connection DEBUG    Connected by ('192.168.56.1', 64974)
+2025-04-29 09:47:51,314  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 09:47:51,315  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 09:47:51,315  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 09:47:57,310  root       accept_connection DEBUG    Connected by ('192.168.56.1', 65135)
+2025-04-29 09:48:29,238  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 09:48:29,238  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 09:48:29,238  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:21:02,651  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 10:21:02,666  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:21:54,932  root       accept_connection DEBUG    Connected by ('192.168.56.1', 53023)
+2025-04-29 10:22:11,167  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 10:22:11,167  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 10:22:11,168  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:32:11,917  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 10:32:11,937  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:32:16,663  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57117)
+2025-04-29 10:32:28,517  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 10:32:28,517  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 10:32:28,518  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:32:33,520  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57288)
+2025-04-29 10:32:45,300  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 10:32:45,300  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 10:32:45,300  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:32:50,304  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57454)
+2025-04-29 10:32:54,583  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 10:32:54,585  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 10:32:54,585  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:32:55,005  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57482)
+2025-04-29 10:35:42,496  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 10:35:42,497  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 10:35:42,497  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:44:59,397  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 10:44:59,409  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:48:30,216  root       accept_connection DEBUG    Connected by ('192.168.56.1', 59339)
+2025-04-29 10:48:43,081  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 10:48:43,081  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 10:48:43,081  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 10:52:27,795  root       accept_connection DEBUG    Connected by ('192.168.56.1', 59484)
+2025-04-29 10:56:36,408  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 10:56:36,420  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 12:55:32,590  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 12:55:32,618  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 12:56:13,832  root       accept_connection DEBUG    Connected by ('192.168.56.1', 50308)
+2025-04-29 15:18:47,768  root       normalized_read_line DEBUG    'req_timeout' timeout while reading data: 0
+2025-04-29 17:36:54,480  root       normalized_read_line DEBUG    'req_timeout' timeout while reading data: 0
+2025-04-29 17:38:08,156  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-04-29 17:38:08,157  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-04-29 17:38:08,157  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 17:44:53,760  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-04-29 17:44:53,797  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-04-29 17:45:21,624  root       accept_connection DEBUG    Connected by ('192.168.56.1', 54146)
+2025-04-29 17:45:55,631  root       handle_request  DEBUG    Handling: '0101', header '7E0', ECU '7E0'
+2025-04-29 17:45:55,631  root       handle_request  DEBUG    Instantiating ECU task "Default ECU Task module" for ECU "7E0"
+2025-04-29 17:45:55,641  root       handle_request  INFO     Unknown request: '0101', header=7E0
+2025-04-29 17:45:55,645  root       handle_response DEBUG    Processing: '<writeln>NO DATA</writeln>'
+2025-04-29 17:46:43,883  root       handle_request  DEBUG    Handling: '010A', header '7E0', ECU '7E0'
+2025-04-29 17:46:43,883  root       handle_request  DEBUG    UDS P3 timer expired: running stop() method for ECU task "Default ECU Task module", ECU="7E0".
+2025-04-29 17:46:43,883  root       handle_request  INFO     Unknown request: '010A', header=7E0
+2025-04-29 17:46:43,884  root       handle_response DEBUG    Processing: '<writeln>NO DATA</writeln>'
+2025-04-29 17:47:00,035  root       handle_request  DEBUG    Handling: 'A101', header '7E0', ECU '7E0'
+2025-04-29 17:47:00,036  root       handle_request  DEBUG    UDS P3 timer expired: running stop() method for ECU task "Default ECU Task module", ECU="7E0".
+2025-04-29 17:47:00,036  root       handle_request  INFO     Unknown request: 'A101', header=7E0
+2025-04-29 17:47:00,037  root       handle_response DEBUG    Processing: '<writeln>NO DATA</writeln>'
+2025-05-24 20:39:59,393  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-05-24 20:39:59,406  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 20:44:29,409  root       accept_connection DEBUG    Connected by ('192.168.56.1', 56109)
+2025-05-24 20:45:15,003  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 20:45:15,003  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 20:45:15,003  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 21:12:15,824  root       accept_connection DEBUG    Connected by ('192.168.56.1', 56673)
+2025-05-24 21:12:29,605  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 21:12:29,605  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 21:12:29,605  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 21:18:46,130  root       accept_connection DEBUG    Connected by ('192.168.56.1', 56776)
+2025-05-24 21:19:19,047  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 21:19:19,047  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 21:19:19,047  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 21:21:06,574  root       accept_connection DEBUG    Connected by ('192.168.56.1', 56889)
+2025-05-24 21:23:52,872  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 21:23:52,874  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 21:23:52,874  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 21:58:11,146  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57515)
+2025-05-24 22:02:31,740  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:02:31,740  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:02:31,740  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:02:37,817  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57747)
+2025-05-24 22:03:13,938  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:03:13,938  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:03:13,939  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:03:32,615  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57762)
+2025-05-24 22:03:32,791  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:03:32,791  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:03:32,791  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:03:59,414  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57765)
+2025-05-24 22:04:03,768  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:04:03,768  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:04:03,768  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:10:25,104  root       accept_connection DEBUG    Connected by ('192.168.56.1', 57899)
+2025-05-24 22:11:03,449  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:11:03,449  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:11:03,449  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:18:34,982  root       accept_connection DEBUG    Connected by ('192.168.56.1', 58259)
+2025-05-24 22:18:54,728  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:18:54,728  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:18:54,728  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:19:02,924  root       accept_connection DEBUG    Connected by ('192.168.56.1', 58263)
+2025-05-24 22:19:51,511  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:19:51,511  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:19:51,512  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-24 22:20:31,862  root       accept_connection DEBUG    Connected by ('192.168.56.1', 58299)
+2025-05-24 22:25:01,761  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-24 22:25:01,762  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-24 22:25:01,762  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 09:19:48,452  root       accept_connection DEBUG    Connected by ('192.168.56.1', 60534)
+2025-05-25 09:20:02,249  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-25 09:20:02,250  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-25 09:20:02,250  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 10:30:09,469  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-05-25 10:30:09,486  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 10:32:14,860  root       accept_connection DEBUG    Connected by ('192.168.56.1', 65332)
+2025-05-25 10:33:18,208  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-25 10:33:18,209  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-25 10:33:18,209  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 11:06:40,248  root       accept_connection DEBUG    Connected by ('192.168.56.1', 49566)
+2025-05-25 11:06:58,639  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-25 11:06:58,639  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-25 11:06:58,639  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 16:24:24,594  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-05-25 16:24:24,609  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 18:19:33,125  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-05-25 18:19:33,140  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 18:25:55,792  root       accept_connection DEBUG    Connected by ('192.168.56.1', 56993)
+2025-05-25 18:26:35,113  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-25 18:26:35,113  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-25 18:26:35,113  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 20:22:46,819  root       accept_connection DEBUG    Connected by ('192.168.56.1', 59615)
+2025-05-25 20:28:28,585  root       terminate       DEBUG    Start termination procedure.
+2025-05-25 20:28:29,686  root       terminate       DEBUG    Cannot join current thread.
+2025-05-25 20:28:29,686  root       terminate       DEBUG    Cannot close file descriptors.
+2025-05-25 20:28:29,687  root       terminate       DEBUG    Terminated.
+2025-05-25 20:28:41,834  root       run             INFO     
+
+ELM327 OBD-II adapter emulator v3.0.3 started at TCP/IP network port 35000.
+
+2025-05-25 20:28:41,850  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 20:59:14,287  root       accept_connection DEBUG    Connected by ('192.168.56.1', 61562)
+2025-05-25 21:00:50,903  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-25 21:00:50,927  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-25 21:00:50,927  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.
+2025-05-25 21:03:02,344  root       accept_connection DEBUG    Connected by ('192.168.56.1', 61879)
+2025-05-25 23:56:16,863  root       read_from_device DEBUG    TCP/IP communication terminated by the client.
+2025-05-25 23:56:16,866  root       reset           DEBUG    Resetting counters and sleeping for 0 seconds
+2025-05-25 23:56:16,867  root       accept_connection DEBUG    Waiting for connection at TCP/IP network port 35000.

@@ -361,7 +361,7 @@ const VehicleManagement: React.FC = () => {
                   key={number}
                   onClick={() => handlePageChange(number)}
                   className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${currentPage === number
-                    ? 'bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                    ? 'bg-primary-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
                     : 'bg-white text-gray-900 hover:bg-gray-50 focus:z-20'
                     }`}
                 >
@@ -404,7 +404,7 @@ const VehicleManagement: React.FC = () => {
         <h1 className="text-2xl font-bold">Управление автомобилями</h1>
         <button
           onClick={handleAddNew}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600"
         >
           Добавить новый автомобиль
         </button>
@@ -423,7 +423,7 @@ const VehicleManagement: React.FC = () => {
                   type="text"
                   value={formData.vin}
                   onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -432,7 +432,7 @@ const VehicleManagement: React.FC = () => {
                 <select
                   value={selectedMake}
                   onChange={handleMakeChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                 >
                   <option value="">Выберите марку</option>
@@ -446,7 +446,7 @@ const VehicleManagement: React.FC = () => {
                 <select
                   value={carModels.find(model => model.name === formData.model)?.id || ''}
                   onChange={handleModelChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                   disabled={!selectedMake}
                 >
@@ -462,7 +462,7 @@ const VehicleManagement: React.FC = () => {
                   type="text"
                   value={formData.plate_number}
                   onChange={(e) => setFormData({ ...formData, plate_number: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -472,7 +472,7 @@ const VehicleManagement: React.FC = () => {
                   type="text"
                   value={formData.owner_phone}
                   onChange={(e) => setFormData({ ...formData, owner_phone: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -482,7 +482,7 @@ const VehicleManagement: React.FC = () => {
                   type="number"
                   value={formData.mileage}
                   onChange={(e) => setFormData({ ...formData, mileage: parseInt(e.target.value) })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -492,7 +492,7 @@ const VehicleManagement: React.FC = () => {
                   type="date"
                   value={formData.lastServiceDate}
                   onChange={(e) => setFormData({ ...formData, lastServiceDate: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -511,7 +511,7 @@ const VehicleManagement: React.FC = () => {
               </button>
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600"
               >
                 Сохранить
               </button>
@@ -536,7 +536,7 @@ const VehicleManagement: React.FC = () => {
                 value={filterVin}
                 onChange={handleFilterChange}
                 placeholder="Фильтр по VIN"
-                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
               />
             </div>
             <div className="relative">
@@ -551,7 +551,7 @@ const VehicleManagement: React.FC = () => {
                 value={filterOwnerPhone}
                 onChange={handleFilterChange}
                 placeholder="Фильтр по телефону"
-                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
               />
             </div>
           </div>
@@ -582,7 +582,7 @@ const VehicleManagement: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => handleSelectVehicleForEdit(vehicle)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-primary-600 hover:text-primary-900"
                     >
                       Редактировать
                     </button>

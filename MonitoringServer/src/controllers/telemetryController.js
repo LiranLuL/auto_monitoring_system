@@ -109,4 +109,81 @@ exports.getTelemetry = async (req, res) => {
     console.error('Error getting telemetry:', error);
     res.status(500).json({ message: 'Ошибка при получении телеметрических данных', error: error.message });
   }
+};
+
+// Новый метод для получения телеметрии без аутентификации (для модуля предиктивного анализа)
+exports.getVehicleTelemetryData = async (req, res) => {
+  try {
+    const { vehicle_id, limit = 10, start_date, end_date } = req.query;
+    
+    console.log('Getting telemetry data for predictive analysis:', { vehicle_id, limit, start_date, end_date });
+    
+    if (!vehicle_id) {
+      return res.status(400).json({ message: 'ID автомобиля не указан' });
+    }
+    
+    // Строим базовый запрос
+    let query = `
+      SELECT * FROM telemetry_data 
+      WHERE vehicle_id = $1 
+    `;
+    
+    const queryParams = [vehicle_id];
+    let paramCounter = 2;
+    
+    // Добавляем фильтры по датам, если указаны
+    if (start_date) {
+      query += ` AND created_at >= $${paramCounter++}`;
+      queryParams.push(new Date(start_date));
+    }
+    
+    if (end_date) {
+      query += ` AND created_at <= $${paramCounter++}`;
+      queryParams.push(new Date(end_date));
+    }
+    
+    // Добавляем сортировку и лимит
+    query += ` ORDER BY created_at DESC LIMIT $${paramCounter}`;
+    queryParams.push(parseInt(limit));
+    
+    // Выполняем запрос
+    const result = await db.query(query, queryParams);
+    
+    if (result.rows.length === 0) {
+      return res.status(200).json({ message: 'Телеметрические данные не найдены', data: [] });
+    }
+    
+    console.log(`Retrieved ${result.rows.length} telemetry records for vehicle ${vehicle_id}`);
+    
+    // Форматируем данные для ответа
+    const formattedData = result.rows.map(row => {
+      // Преобразование camelCase для совместимости с клиентским кодом
+      return {
+        id: row.id,
+        vehicleId: row.vehicle_id,
+        rpm: row.rpm,
+        speed: row.speed,
+        engineTemp: row.engine_temp,
+        dtcCodes: row.dtc_codes,
+        o2Voltage: row.o2_voltage,
+        fuelPressure: row.fuel_pressure,
+        intakeTemp: row.intake_temp,
+        mafSensor: row.maf_sensor,
+        throttlePos: row.throttle_pos,
+        engineHealth: row.engine_health,
+        oilHealth: row.oil_health,
+        tiresHealth: row.tires_health, 
+        brakesHealth: row.brakes_health,
+        createdAt: row.created_at
+      };
+    });
+    
+    res.json({ data: formattedData });
+  } catch (error) {
+    console.error('Error getting vehicle telemetry data:', error);
+    res.status(500).json({ 
+      message: 'Ошибка при получении телеметрических данных',
+      error: error.message 
+    });
+  }
 }; 

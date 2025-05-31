@@ -8,6 +8,10 @@ const vehicleController = require('../controllers/vehicle');
 const telemetryController = require('../controllers/telemetryController');
 const userController = require('../controllers/userController');
 const analysisController = require('../controllers/analysisController');
+const recommendationsController = require('../controllers/recommendationsController');
+
+router.get('/emulator/recommendations/:vehicleId', recommendationsController.generateRecommendations);
+router.get('/analysis/recommendations/:vehicleId', recommendationsController.generateRecommendations);
 
 // Маршруты для техников
 router.post('/elm327-data', 
@@ -83,5 +87,12 @@ router.post('/analysis/vehicle/:vehicleId/analyze', auth, analysisController.req
 router.get('/analysis/vehicle/:vehicleId/latest', auth, analysisController.getLatestAnalysis);
 router.get('/analysis/vehicle/:vehicleId/history', auth, analysisController.getAnalysisHistory);
 router.post('/analysis/full', auth, analysisController.runFullAnalysis);
+
+router.get('/prediction/vehicles', vehicleController.getAllVehicles);
+router.get('/prediction/vehicles/:vehicleId', vehicleController.getVehicleById);
+router.get('/prediction/vehicles/search/by-vin', vehicleController.searchVehicleByVin);
+router.get('/prediction/telemetry/vehicle-data', telemetryController.getVehicleTelemetryData);
+router.get('/prediction/works/vehicle/:vehicleId', workController.getVehicleWorks);
+router.post('/prediction/analysis/vehicle/:vehicleId/results', analysisController.saveAnalysisResults);
 
 module.exports = router;

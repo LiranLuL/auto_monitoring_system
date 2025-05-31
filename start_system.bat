@@ -15,7 +15,7 @@ timeout /t 1
 
 REM Запуск сервиса периодического анализа
 
-start cmd /k "cd /d D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis && python start_service.py"
+start cmd /k "cd /d D:\auto_monitoring_system\MonitoringServer\src\modules\predictive_analysis && python api_server.py"
 timeout /t 1
 
 REM Запуск эмулятора

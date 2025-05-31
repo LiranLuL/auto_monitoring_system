@@ -24,7 +24,6 @@ function getNetworkInterfaces() {
     
     Object.keys(interfaces).forEach((interfaceName) => {
         interfaces[interfaceName].forEach((interface) => {
-            // Пропускаем IPv6 и неактивные интерфейсы
             if (interface.family === 'IPv4' && !interface.internal) {
                 addresses.push({
                     interface: interfaceName,
@@ -37,7 +36,6 @@ function getNetworkInterfaces() {
     return addresses;
 }
 
-// Инициализация таблиц последовательно
 async function initializeTables() {
   try {
     // Создаем таблицы пользователей и автомобилей
@@ -60,17 +58,14 @@ async function initializeTables() {
   }
 }
 
-// Маршруты API
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/telemetry', telemetryRoutes);
 
-// Проверка работы
 app.get('/', (req, res) => {
   res.send('Car Monitoring Server v1.0');
 });
 
-// Запуск сервера
 initializeTables().then(() => {
   app.listen(PORT, () => {
     console.log('\n=== Server Information ===');

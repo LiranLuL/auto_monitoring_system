@@ -15,7 +15,7 @@ import okio.Buffer
 
 object ApiClient {
     private const val TAG = "ApiClient"
-    private const val BASE_URL = "http://192.168.0.121:5001/api/"
+    private const val BASE_URL = "http://192.168.56.1:5001/api/"
 
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
         Log.d(TAG, message)

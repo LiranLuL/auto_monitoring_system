@@ -21,6 +21,9 @@ class RecommendationsViewModel : ViewModel() {
 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
+    
+    // Flag to control whether to use the emulator endpoint
+    private val useEmulator = true
 
     fun getLatestAnalysis(authToken: String, vehicleId: String) {
         _isLoading.value = true
@@ -30,7 +33,14 @@ class RecommendationsViewModel : ViewModel() {
         
         viewModelScope.launch {
             try {
-                val response = ApiClient.apiService.getLatestAnalysis(vehicleId, authToken)
+                val response = if (useEmulator) {
+                    // Using emulator endpoint (no auth required)
+                    Log.d(TAG, "Using emulator endpoint")
+                    ApiClient.apiService.getEmulatedRecommendations(vehicleId)
+                } else {
+                    // Using regular endpoint with authentication
+                    ApiClient.apiService.getLatestAnalysis(vehicleId, authToken)
+                }
                 
                 Log.d(TAG, "Response code: ${response.code()}")
                 
@@ -38,42 +48,9 @@ class RecommendationsViewModel : ViewModel() {
                 response.body()?.let { body ->
                     Log.d(TAG, "Raw response body: $body")
                     
-                    // Проверяем статус и наличие данных анализа
-                    if (body.status == "warning" || body.analysis == null) {
-                        Log.w(TAG, "Received warning or null analysis: ${body.status}")
-                        
-                        // Создаем фиктивный объект анализа с резервными рекомендациями
-                        val defaultAnalysis = VehicleAnalysis(
-                            vehicle_id = vehicleId,
-                            engine_health = 80,
-                            oil_health = 75,
-                            tires_health = 85,
-                            brakes_health = 90,
-                            suspension_health = 85,
-                            battery_health = 80,
-                            overall_health = 82,
-                            recommendations = listOf(
-                                "Рекомендуется регулярная проверка уровня масла",
-                                "Проверьте давление в шинах при следующем ТО",
-                                "Рекомендуется диагностика двигателя. Обнаружены признаки износа",
-                                "Регулярно проверяйте состояние тормозной системы"
-                            ),
-                            created_at = java.util.Date().toString()
-                        )
-                        
-                        _analysisResult.value = defaultAnalysis
-                        _error.value = null
-                        return@launch
-                    }
-                    
-                    // Продолжаем обработку, только если есть данные анализа
-                    if (body.analysis != null) {
-                        Log.d(TAG, "Analysis recommendations: ${body.analysis.recommendations}")
-                        
-                        // Проверяем кодировку каждой рекомендации
-                        body.analysis.recommendations.forEach { recommendation ->
-                            Log.d(TAG, "Recommendation bytes: ${recommendation.toByteArray(Charset.forName("UTF-8")).contentToString()}")
-                        }
+                    // Проверяем кодировку каждой рекомендации, если они есть
+                    body.analysis?.recommendations?.forEach { recommendation ->
+                        Log.d(TAG, "Recommendation bytes: ${recommendation.toByteArray(Charset.forName("UTF-8")).contentToString()}")
                     }
                 }
                 
@@ -85,40 +62,29 @@ class RecommendationsViewModel : ViewModel() {
                     val analysisResponse = response.body()
                     Log.d(TAG, "Analysis response: $analysisResponse")
                     
+                    // Check for successful status and non-null analysis data
                     if (analysisResponse != null && analysisResponse.status == "success" && analysisResponse.analysis != null) {
-                        // Проверяем и исправляем пустые рекомендации
-                        if (analysisResponse.analysis.recommendations.isEmpty()) {
-                            Log.w(TAG, "Получены пустые рекомендации, используем резервные")
-                            // Создаем копию объекта с дополненными рекомендациями
-                            val fixedAnalysis = analysisResponse.analysis.copy(
-                                recommendations = listOf(
-                                    "Рекомендуется регулярная проверка уровня масла",
-                                    "Проверьте давление в шинах при следующем ТО",
-                                    "Рекомендуется диагностика двигателя. Обнаружены признаки износа",
-                                    "Регулярно проверяйте состояние тормозной системы"
-                                )
-                            )
-                            _analysisResult.value = fixedAnalysis
-                        } else {
-                            _analysisResult.value = analysisResponse.analysis
-                        }
+                        // Analysis data is valid, pass it to the observer
+                        _analysisResult.value = analysisResponse.analysis
                         _error.value = null
                     } else {
-                        Log.w(TAG, "Invalid response format: $analysisResponse")
-                        _error.value = "Не удалось получить данные анализа"
+                        // Handle cases where status is not 'success', or analysis is null, or response format is unexpected
+                        val errorMsg = analysisResponse ?: "Invalid response format or missing analysis data."
+                        Log.w(TAG, "Analysis fetch failed or invalid: Status=${analysisResponse?.status}, Message='$errorMsg'")
+                        _error.value = "Не удалось получить данные анализа: $errorMsg"
+                        _analysisResult.value = null // Clear previous results if any
                     }
                 } else {
+                    // Handle non-2xx responses
+                    val errorMsg = response.errorBody()?.string() ?: "Unknown error"
+                    Log.e(TAG, "API Error Response (${response.code()}): $errorMsg")
                     when (response.code()) {
-                        401 -> {
-                            _error.value = "Ошибка авторизации. Пожалуйста, войдите в систему"
-                        }
-                        404 -> {
-                            _error.value = "Данные для этого автомобиля не найдены"
-                        }
-                        else -> {
-                            _error.value = "Ошибка сервера (${response.code()})"
-                        }
+                        401 -> _error.value = "Ошибка авторизации. Пожалуйста, войдите в систему"
+                        404 -> _error.value = "Данные для этого автомобиля не найдены"
+                        500 -> _error.value = "Внутренняя ошибка сервера при получении анализа." // More specific message for 500
+                        else -> _error.value = "Ошибка сервера (${response.code()})"
                     }
+                     _analysisResult.value = null // Clear previous results if any
                 }
                 
             } catch (e: IOException) {
